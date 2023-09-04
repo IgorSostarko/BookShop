@@ -9,5 +9,11 @@ namespace BookShop.Api.Data
         {
         }
         public DbSet<Category> Categories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Category>().HasData(DataInitializer.ReturnCategoryData());
+        }
     }
 }

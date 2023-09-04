@@ -1,4 +1,6 @@
 using BookShop.Api.Data;
+using BookShop.Api.Interfaces;
+using BookShop.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options=>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookShopConnectionString"));
 });
 
+builder.Services.AddScoped<ICategoryRepositoryService, CategoryRepositoryService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
