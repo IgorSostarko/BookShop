@@ -1,0 +1,49 @@
+﻿@page "/categories"
+@using BookShop.Models;
+@using BookShop.Web.Interfaces;
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+
+<br /><br />
+@if (Categories is not null)
+{
+    <RadzenButton Click="Details" Text="Details" />
+    <RadzenButton Click="AddCategory" Text="Add category" />
+
+    <RadzenDataGrid SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Categories" TItem="Category" AllowPaging="true" PageSize="5" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
+        <Columns>
+            <RadzenDataGridColumn TItem="Category" Property="Id" Title="Category Id" Sortable="true" Filterable="false" />
+            <RadzenDataGridColumn TItem="Category" Property="Name" Title="Category Name" Sortable="true" />
+            <RadzenDataGridColumn TItem="Category" Property="DisplayOrder" Title="Category Order" Sortable="true" Filterable="false" />
+        </Columns>
+    </RadzenDataGrid>
+
+
+}
+else
+{
+    <p>Loading...</p>
+}
+
+
+@code {
+    public IList<Category>? selected;
+    public List<Category>? Categories { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Categories = await CategoryService.GetCategories();
+    }
+    public void Details()
+    {
+        if (selected is not null)
+        {
+            NavigationManager.NavigateTo($"category/{selected[0].Id}");
+        }
+    }
+    public void AddCategory()
+    {
+        NavigationManager.NavigateTo($"category/add");
+    }
+
+}

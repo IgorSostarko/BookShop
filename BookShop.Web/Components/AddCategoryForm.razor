@@ -1,0 +1,41 @@
+﻿@page "/category/add"
+@using BookShop.Models;
+@using BookShop.Web.Interfaces;
+@using BookShop.Web.Services;
+@inject ICategoryService CategoryService
+
+<RadzenTemplateForm TItem="Category" Data=@category Submit=@Submit InvalidSubmit="@InvalidSubmit">
+    <RadzenFieldset Text="Add category">
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Name" />
+            </div>
+            <div class="col">
+                <RadzenTextBox style="display: block" Name="Name" @bind-Value=@category.Name class="w-100" />
+                <RadzenRequiredValidator Component="Name" Text="Name is required" Popup=true Style="position: absolute"/>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-4">
+                    <RadzenLabel Text="Display order" />
+            </div>
+            <div class="col">
+                <RadzenNumeric style="display: block" Name="DisplayOrder" @bind-Value=@category.DisplayOrder  class="w-100" />
+                <RadzenRequiredValidator Component="DisplayOrder" Text="Display order is required" Popup=true Style="position: absolute"/>
+            </div>
+        </div>
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" ></RadzenButton>
+    </RadzenFieldset>
+</RadzenTemplateForm>
+
+@code {
+    public Category category { get; set; } = new();
+    void Submit(Category category)
+    {
+        CategoryService.AddCategory(category);
+    }
+    void InvalidSubmit()
+    {
+    }
+
+}

@@ -25,10 +25,12 @@ namespace BookShop.Api.Services
             var category=await _appDbContext.Categories.SingleOrDefaultAsync(c => c.Id == id);
             return category;
         }
-        public async Task<IEnumerable<int>> ReturnIds()
+        public async Task<Category> InsertCategory(Category category)
         {
-            var ids=await _appDbContext.Categories.Select(a=>a.Id).ToListAsync();
-            return ids;
+            await _appDbContext.Categories.AddAsync(category);
+            await _appDbContext.SaveChangesAsync();
+            return category;
         }
+
     }
 }

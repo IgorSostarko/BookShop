@@ -1,3 +1,5 @@
+using BookShop.Web.Interfaces;
+using BookShop.Web.Services;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,12 @@ builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<TooltipService>();
+builder.Services.AddScoped<NotificationService>();
+
+builder.Services.AddHttpClient<ICategoryService, CategoryService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7003/");
+});
 
 var app = builder.Build();
 

@@ -6,5 +6,6 @@ namespace BookShop.Api.Interfaces
     {
         Task<IEnumerable<Category>> GetCategoriesAsync();
         Task<Category?> GetCategoryByIdAsync(int id);
+        Task<Category> InsertCategory(Category category);
     }
 }

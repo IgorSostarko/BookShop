@@ -18,7 +18,7 @@ public class CategoriesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
     {
-        var categories= await _categoryRepositoryService.GetCategoriesAsync();
+        var categories = await _categoryRepositoryService.GetCategoriesAsync();
 
         return Ok(categories);
     }
@@ -31,6 +31,16 @@ public class CategoriesController : ControllerBase
             return NotFound();
         }
         return Ok(category);
+    }
+    [HttpPost]
+    public async Task<ActionResult<Category>> CreateCategory([FromBody] Category category)
+    {
+        if (category is null)
+        {
+            return BadRequest();
+        }
+        var createdCategory= await _categoryRepositoryService.InsertCategory(category);
+        return CreatedAtAction(nameof(GetCategoryById), new { createdCategory.Id}, createdCategory);
     }
     
 }

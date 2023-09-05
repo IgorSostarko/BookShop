@@ -1,0 +1,32 @@
+﻿@page "/category/{id:int}"
+@using BookShop.Models;
+@using BookShop.Web.Interfaces;
+@inject ICategoryService CategoryService
+
+@if (category is not null)
+{
+    <RadzenDataGrid Data="@category" EditMode="DataGridEditMode.Single">
+        <Columns>
+            <RadzenDataGridColumn TItem="Category" Property="Name" Title="Category Name" Sortable="true" />
+            <RadzenDataGridColumn TItem="Category" Property="DisplayOrder" Title="Category Order" Sortable="true" Filterable="false" />
+        </Columns>
+    </RadzenDataGrid>
+}
+
+else
+{
+    <p>Loading...</p>
+}
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    public List<Category>? category;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var cat_ = await CategoryService.GetCategory(id);
+        category = new List<Category>() { cat_ };
+    }
+}

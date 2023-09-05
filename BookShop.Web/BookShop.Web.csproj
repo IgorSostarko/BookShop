@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Radzen.Blazor" Version="4.15.9" />
+    <PackageReference Include="Radzen.Blazor" Version="4.15.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BookShop.Models\BookShop.Models.csproj" />
   </ItemGroup>
 
 </Project>

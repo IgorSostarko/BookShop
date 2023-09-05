@@ -5,9 +5,9 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookShop.Web", "BookShop.Web\BookShop.Web.csproj", "{D5224C70-03F6-4BD9-917A-DC08B7957C27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShop.Api", "BookShop.Api\BookShop.Api.csproj", "{ECA66FDA-1995-45FF-B26F-34F9FE9F5882}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookShop.Api", "BookShop.Api\BookShop.Api.csproj", "{ECA66FDA-1995-45FF-B26F-34F9FE9F5882}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShop.Models", "BookShop.Models\BookShop.Models.csproj", "{3CC622D4-5037-4D01-A4F0-EF7201E74CDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookShop.Models", "BookShop.Models\BookShop.Models.csproj", "{3CC622D4-5037-4D01-A4F0-EF7201E74CDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
