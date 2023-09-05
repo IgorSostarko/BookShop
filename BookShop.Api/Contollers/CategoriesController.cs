@@ -22,4 +22,15 @@ public class CategoriesController : ControllerBase
 
         return Ok(categories);
     }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Category>> GetCategoryById(int id)
+    {
+        var category = await _categoryRepositoryService.GetCategoryByIdAsync(id);
+        if (category is null)
+        {
+            return NotFound();
+        }
+        return Ok(category);
+    }
+    
 }
