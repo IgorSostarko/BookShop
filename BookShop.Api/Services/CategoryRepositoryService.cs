@@ -32,5 +32,21 @@ namespace BookShop.Api.Services
             return category;
         }
 
+        public async Task<Category> UpdateCategoryAsync(Category categoryToUpdate, Category category)
+        {
+            
+            categoryToUpdate.Name= category.Name;
+            categoryToUpdate.DisplayOrder = category.DisplayOrder;
+            _appDbContext.Categories.Update(categoryToUpdate);
+            await _appDbContext.SaveChangesAsync();
+            return categoryToUpdate;
+        }
+
+        public async Task<Category> DeleteCategory(Category category)
+        {
+            _appDbContext.Categories.Remove(category);
+            await _appDbContext.SaveChangesAsync();
+            return category;
+        }
     }
 }

@@ -3,6 +3,8 @@
 @using BookShop.Web.Interfaces;
 @using BookShop.Web.Services;
 @inject ICategoryService CategoryService
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
 
 <RadzenTemplateForm TItem="Category" Data=@category Submit=@Submit InvalidSubmit="@InvalidSubmit">
     <RadzenFieldset Text="Add category">
@@ -25,17 +27,29 @@
             </div>
         </div>
         <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" ></RadzenButton>
+        <RadzenButton Text="Cancel" Click="Cancel"></RadzenButton>
     </RadzenFieldset>
 </RadzenTemplateForm>
 
+
 @code {
     public Category category { get; set; } = new();
-    void Submit(Category category)
+    async Task Submit(Category category)
     {
-        CategoryService.AddCategory(category);
+
+        var isCreated= await CategoryService.AddCategory(category);
+        if (isCreated)
+        {
+            NotificationService.Notify(NotificationSeverity.Success, "Success!", "Succesfuly added to database.");
+            NavigationManager.NavigateTo("/categories");
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error!", "Could not add to database.");
+        }
+
     }
-    void InvalidSubmit()
-    {
-    }
+    void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
+    void Cancel() => NavigationManager.NavigateTo("/categories");
 
 }

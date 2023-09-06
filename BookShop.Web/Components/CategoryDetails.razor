@@ -2,6 +2,7 @@
 @using BookShop.Models;
 @using BookShop.Web.Interfaces;
 @inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
 
 @if (category is not null)
 {
@@ -11,6 +12,7 @@
             <RadzenDataGridColumn TItem="Category" Property="DisplayOrder" Title="Category Order" Sortable="true" Filterable="false" />
         </Columns>
     </RadzenDataGrid>
+    <RadzenButton Text="Go back" Click="Cancel"></RadzenButton>
 }
 
 else
@@ -29,4 +31,5 @@ else
         var cat_ = await CategoryService.GetCategory(id);
         category = new List<Category>() { cat_ };
     }
+    void Cancel() => NavigationManager.NavigateTo("/categories");
 }

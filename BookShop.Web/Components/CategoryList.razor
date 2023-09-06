@@ -3,14 +3,19 @@
 @using BookShop.Web.Interfaces;
 @inject ICategoryService CategoryService
 @inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
+@inject DialogService DialogService
 
 <br /><br />
+<h1>Categories</h1>
 @if (Categories is not null)
 {
     <RadzenButton Click="Details" Text="Details" />
     <RadzenButton Click="AddCategory" Text="Add category" />
+    <RadzenButton Click="UpdateCategory" Text="Update category" />
 
-    <RadzenDataGrid SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Categories" TItem="Category" AllowPaging="true" PageSize="5" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
+    <RadzenButton Click="DeleteCategory" Text="Delete category" />
+    <RadzenDataGrid @ref="grid" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Categories" TItem="Category" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
         <Columns>
             <RadzenDataGridColumn TItem="Category" Property="Id" Title="Category Id" Sortable="true" Filterable="false" />
             <RadzenDataGridColumn TItem="Category" Property="Name" Title="Category Name" Sortable="true" />
@@ -22,11 +27,14 @@
 }
 else
 {
-    <p>Loading...</p>
+    <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+        <Template>Loading...</Template>
+    </RadzenProgressBarCircular>
 }
 
 
 @code {
+    public RadzenDataGrid<Category> grid;
     public IList<Category>? selected;
     public List<Category>? Categories { get; set; }
     protected override async Task OnInitializedAsync()
@@ -40,10 +48,42 @@ else
         {
             NavigationManager.NavigateTo($"category/{selected[0].Id}");
         }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Select Category");
+        }
     }
     public void AddCategory()
     {
         NavigationManager.NavigateTo($"category/add");
+    }
+    public void UpdateCategory()
+    {
+        if (selected is not null)
+        {
+            NavigationManager.NavigateTo($"category/edit/{selected.First().Id}");
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Select Category");
+        }
+    }
+
+    public async Task DeleteCategory()
+    {
+        if (selected is not null)
+        {
+            var confirmDelete=await DialogService.Confirm($"Delete item with id {selected[0].Id}?", "Confirm", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+            if (confirmDelete.GetValueOrDefault())
+            {
+                await CategoryService.DeleteCategory(selected.First());
+                NavigationManager.NavigateTo("/categories", true);
+            }
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Select Category");
+        }
     }
 
 }

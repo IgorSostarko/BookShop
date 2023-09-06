@@ -23,9 +23,22 @@ namespace BookShop.Web.Services
             var category = await _httpClient.GetFromJsonAsync<Category>($"api/categories/{id}");
             return category;
         }
-        public async Task AddCategory(Category category)
+        public async Task<bool> AddCategory(Category category)
         {
-            await _httpClient.PostAsJsonAsync("api/categories", category);
+            var response= await _httpClient.PostAsJsonAsync("api/categories", category);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateCategory(int id, Category category)
+        {
+            var response=await _httpClient.PutAsJsonAsync($"api/categories/{id}", category);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task DeleteCategory(Category category)
+        {
+            await _httpClient.DeleteFromJsonAsync($"api/categories/{category.Id}", typeof(Category));
         }
     }
 }

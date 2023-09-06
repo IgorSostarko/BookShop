@@ -1,0 +1,62 @@
+﻿@page "/category/edit/{id:int}"
+
+@using BookShop.Models;
+@using BookShop.Web.Interfaces;
+@using BookShop.Web.Services;
+@inject ICategoryService CategoryService
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
+
+<RadzenTemplateForm TItem="Category" Data=@Category Submit=@Submit InvalidSubmit="@InvalidSubmit">
+    <RadzenFieldset Text="Edit category">
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Name" />
+            </div>
+            <div class="col">
+                <RadzenTextBox style="display: block" Name="Name" @bind-Value=@Category.Name class="w-100" />
+                <RadzenRequiredValidator Component="Name" Text="Name is required" Popup=true Style="position: absolute" />
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Display order" />
+            </div>
+            <div class="col">
+                <RadzenNumeric style="display: block" Name="DisplayOrder" @bind-Value=@Category.DisplayOrder class="w-100" />
+                <RadzenRequiredValidator Component="DisplayOrder" Text="Display order is required" Popup=true Style="position: absolute" />
+            </div>
+        </div>
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+        <RadzenButton Text="Cancel" Click="Cancel"></RadzenButton>
+    </RadzenFieldset>
+</RadzenTemplateForm>
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    public Category Category { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Category = await CategoryService.GetCategory(id);
+    }
+    async Task Submit(Category category)
+    {
+        var isSuccess= await CategoryService.UpdateCategory(id, category);
+        if (isSuccess)
+        {
+            NotificationService.Notify(NotificationSeverity.Success, "Success!", "Updated succesfuly.");
+            NavigationManager.NavigateTo("/categories");
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error!", "Could not update.");
+        }
+
+    }
+    void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
+    void Cancel() => NavigationManager.NavigateTo("/categories", true);
+
+}

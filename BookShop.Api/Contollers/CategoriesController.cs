@@ -42,5 +42,27 @@ public class CategoriesController : ControllerBase
         var createdCategory= await _categoryRepositoryService.InsertCategory(category);
         return CreatedAtAction(nameof(GetCategoryById), new { createdCategory.Id}, createdCategory);
     }
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Category>> UpdateCategory(int id,[FromBody] Category category)
+    {
+        var categoryToUpdate = await _categoryRepositoryService.GetCategoryByIdAsync(category.Id);
+        if (categoryToUpdate == null)
+        {
+            return NotFound();
+        }
+        var update = await _categoryRepositoryService.UpdateCategoryAsync(categoryToUpdate, category);
+        return Ok(update);
+    }
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Category>> DeleteCategory(int id)
+    {
+        var categoryToUpdate = await _categoryRepositoryService.GetCategoryByIdAsync(id);
+        if (categoryToUpdate == null)
+        {
+            return NotFound();
+        }
+        var delete = await _categoryRepositoryService.DeleteCategory(categoryToUpdate);
+        return Ok(delete);
+    }
     
 }
