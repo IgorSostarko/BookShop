@@ -9,5 +9,7 @@ namespace BookShop.Api.Interfaces
         Task<Category> InsertCategory(Category category);
         Task<Category> UpdateCategoryAsync(Category categoryToUpdate, Category category);
         Task<Category> DeleteCategory(Category category);
+        Task<bool> ValidateName(string name);
+        Task<bool> ValidateDisplayOrder(int order);
     }
 }

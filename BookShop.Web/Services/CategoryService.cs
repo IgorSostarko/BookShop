@@ -40,5 +40,23 @@ namespace BookShop.Web.Services
         {
             await _httpClient.DeleteFromJsonAsync($"api/categories/{category.Id}", typeof(Category));
         }
+        public bool ValidateName(string name)
+        {
+            if (name is null)
+            {
+                return false;
+            }
+            var result= _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-name?name={name}");
+            return result.Result;
+        }
+        public bool ValidateDisplayOrder(int? displayOrder)
+        {
+            if (displayOrder is null)
+            {
+                return false;
+            }
+            var result = _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-displayOrder?order={displayOrder}");
+            return result.Result;
+        }
     }
 }

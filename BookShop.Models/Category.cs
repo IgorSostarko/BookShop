@@ -10,7 +10,7 @@ namespace BookShop.Models
         public string? Name { get; set; }
 
         [Required]
-        [Range(1, 10)]
+        [Range(1, 100)]
         public int DisplayOrder { get; set; }
     }
 }

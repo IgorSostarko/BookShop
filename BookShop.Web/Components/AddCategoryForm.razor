@@ -15,6 +15,7 @@
             <div class="col">
                 <RadzenTextBox style="display: block" Name="Name" @bind-Value=@category.Name class="w-100" />
                 <RadzenRequiredValidator Component="Name" Text="Name is required" Popup=true Style="position: absolute"/>
+                <RadzenCustomValidator Component="Name" Validator="@(()=>NameValidator(category.Name))" Text="Name already exists" />
             </div>
         </div>
         <div class="row mb-5">
@@ -24,6 +25,7 @@
             <div class="col">
                 <RadzenNumeric style="display: block" Name="DisplayOrder" @bind-Value=@category.DisplayOrder  class="w-100" />
                 <RadzenRequiredValidator Component="DisplayOrder" Text="Display order is required" Popup=true Style="position: absolute"/>
+                <RadzenCustomValidator Component="DisplayOrder" Validator="@(()=>DisplayOrderValidator(category.DisplayOrder))" Text="Display order already exists" />
             </div>
         </div>
         <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" ></RadzenButton>
@@ -34,6 +36,11 @@
 
 @code {
     public Category category { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
     async Task Submit(Category category)
     {
 
@@ -48,6 +55,16 @@
             NotificationService.Notify(NotificationSeverity.Error, "Error!", "Could not add to database.");
         }
 
+    }
+    bool NameValidator(string name)
+    {
+        var checker = CategoryService.ValidateName(name);
+        return !checker;
+    }
+    bool DisplayOrderValidator(int displayOrder)
+    {
+        var checker = CategoryService.ValidateDisplayOrder(displayOrder);
+        return !checker;
     }
     void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
     void Cancel() => NavigationManager.NavigateTo("/categories");

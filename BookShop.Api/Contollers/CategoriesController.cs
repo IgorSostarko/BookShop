@@ -64,5 +64,17 @@ public class CategoriesController : ControllerBase
         var delete = await _categoryRepositoryService.DeleteCategory(categoryToUpdate);
         return Ok(delete);
     }
+    [HttpGet("validate-name")]
+    public async Task<bool> ValidateName([FromQuery] string name)
+    {
+        var response=await _categoryRepositoryService.ValidateName(name);
+        return response;
+    }
+    [HttpGet("validate-displayOrder")]
+    public async Task<bool> Validate([FromQuery] int order)
+    {
+        var response = await _categoryRepositoryService.ValidateDisplayOrder(order);
+        return response;
+    }
     
 }

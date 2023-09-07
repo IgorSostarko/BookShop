@@ -9,5 +9,7 @@ namespace BookShop.Web.Interfaces
         Task<bool> AddCategory(Category category);
         Task<bool> UpdateCategory(int id, Category category);
         Task DeleteCategory(Category category);
+        public bool ValidateName(string name);
+        public bool ValidateDisplayOrder(int? displayOrder);
     }
 }

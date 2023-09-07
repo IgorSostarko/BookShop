@@ -48,5 +48,15 @@ namespace BookShop.Api.Services
             await _appDbContext.SaveChangesAsync();
             return category;
         }
+
+        public async Task<bool> ValidateName(string name)
+        {
+            return await _appDbContext.Categories.Where(a=>a.Name==name).AnyAsync();
+        }
+
+        public async Task<bool> ValidateDisplayOrder(int order)
+        {
+            return await _appDbContext.Categories.Where(a=>a.DisplayOrder==order).AnyAsync();
+        }
     }
 }
