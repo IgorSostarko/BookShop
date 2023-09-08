@@ -1,0 +1,94 @@
+﻿@page "/products"
+@using BookShop.Models;
+@using BookShop.Web.Interfaces;
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
+@inject DialogService DialogService
+
+<br /><br />
+<h1>Categories</h1>
+@if (Products is not null)
+{
+    <RadzenButton Click="Details" Text="Details" />
+    <RadzenButton Click="AddProduct" Text="Add product" />
+    <RadzenButton Click="UpdateProduct" Text="Update product" />
+    <RadzenButton Click="DeleteProduct" Text="Delete product" />
+
+    <RadzenDataGrid @ref="grid" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
+        <Columns>
+            <RadzenDataGridColumn TItem="Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" />
+            <RadzenDataGridColumn TItem="Product" Property="Name" Title="Product Name" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Author" Title="Product Author" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="CategoryId" Title="Product Category" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Publisher" Title="Product Publisher" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="PublishingYear" Title="Product Publishing Year" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Product Price" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="QuantityInStock" Title="Product Quantity in Stock" Sortable="true" />
+        </Columns>
+    </RadzenDataGrid>
+
+
+}
+else
+{
+    <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+        <Template>Loading...</Template>
+    </RadzenProgressBarCircular>
+}
+
+
+@code {
+    public RadzenDataGrid<Product> grid;
+    public IList<Product>? selected;
+    public List<Product>? Products { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Products = await ProductService.GetProducts();
+    }
+    public void Details()
+    {
+        if (selected is not null)
+        {
+            NavigationManager.NavigateTo($"product/{selected[0].Id}");
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Select Product");
+        }
+    }
+    public void AddProduct()
+    {
+        NavigationManager.NavigateTo($"product/add");
+    }
+    public void UpdateProduct()
+    {
+        if (selected is not null)
+        {
+            NavigationManager.NavigateTo($"product/edit/{selected.First().Id}");
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Select Product");
+        }
+    }
+
+    public async Task DeleteProduct()
+    {
+        if (selected is not null)
+        {
+            var confirmDelete=await DialogService.Confirm($"Delete item with id {selected[0].Id}?", "Confirm", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+            if (confirmDelete.GetValueOrDefault())
+            {
+                await ProductService.DeleteProduct(selected.First());
+                NavigationManager.NavigateTo("/products", true);
+            }
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Select Product");
+        }
+    }
+
+}

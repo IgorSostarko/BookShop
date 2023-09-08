@@ -1,0 +1,116 @@
+﻿@page "/product/add"
+@using BookShop.Models;
+@using BookShop.Web.Interfaces;
+@using BookShop.Web.Services;
+@inject IProductService ProductService
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
+
+<RadzenTemplateForm TItem="Product" Data=@product Submit=@Submit InvalidSubmit="@InvalidSubmit">
+    <RadzenFieldset Text="Add product">
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Name" />
+            </div>
+            <div class="col">
+                <RadzenTextBox style="display: block" Name="Name" @bind-Value=@product.Name class="w-100" />
+                <RadzenRequiredValidator Component="Name" Text="Name is required" Popup=true Style="position: absolute"/>
+                <RadzenCustomValidator Component="Name" Validator="@(()=>NameValidator(product.Name))" Text="Name already exists" />
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Author" />
+            </div>
+            <div class="col">
+                <RadzenTextBox style="display: block" Name="Author" @bind-Value=@product.Author class="w-100" />
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Category ID" />
+            </div>
+            <div class="col">
+                <RadzenNumeric Name="CategoryId" @bind-Value=@product.CategoryId class="w-100" />
+                <RadzenRequiredValidator Component="CategoryId" Text="Category is required" Popup=true Style="position: absolute" />
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Publisher" />
+            </div>
+            <div class="col">
+                <RadzenTextBox style="display: block;" Name="Publisher" @bind-Value=@product.Publisher class="w-100" />
+                <RadzenRequiredValidator Component="Publisher" Text="Publisher is required" Popup=true Style="position: absolute" />
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Publishing year" />
+            </div>
+            <div class="col">
+                <RadzenNumeric Name="Publishing year" @bind-Value=@product.PublishingYear class="w-100" />
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Price" />
+            </div>
+            <div class="col">
+                <RadzenNumeric Name="Price" @bind-Value=@product.Price class="w-100" />
+                <RadzenRequiredValidator Component="Price" Text="Price is required" Popup=true Style="position: absolute" />
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="QuantityInStock" />
+            </div>
+            <div class="col">
+                <RadzenNumeric Name="QuantityInStock" @bind-Value=@product.QuantityInStock class="w-100" />
+                <RadzenRequiredValidator Component="QuantityInStock" Text="Quantity is required" Popup=true Style="position: absolute" />
+            </div>
+        </div>
+
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" ></RadzenButton>
+        <RadzenButton Text="Cancel" Click="Cancel"></RadzenButton>
+    </RadzenFieldset>
+</RadzenTemplateForm>
+
+
+@code {
+    public Product product { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+    async Task Submit(Product product)
+    {
+
+        var isCreated= await ProductService.AddProduct(product);
+        if (isCreated)
+        {
+            NotificationService.Notify(NotificationSeverity.Success, "Success!", "Succesfuly added to database.");
+            NavigationManager.NavigateTo("/products");
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error!", "Could not add to database.");
+        }
+
+    }
+    bool NameValidator(string name)
+    {
+        var checker = ProductService.ValidateName(name);
+        return !checker;
+    }
+    void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
+    void Cancel() => NavigationManager.NavigateTo("/products");
+
+}

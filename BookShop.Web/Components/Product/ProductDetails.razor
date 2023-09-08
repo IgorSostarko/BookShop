@@ -1,0 +1,41 @@
+﻿@page "/product/{id:int}"
+@using BookShop.Models;
+@using BookShop.Web.Interfaces;
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
+
+@if (Products is not null)
+{
+    <RadzenDataGrid SelectionMode="DataGridSelectionMode.Single"  Data="@Products" TItem="Product" AllowPaging="true" PageSize="10">
+        <Columns>
+            <RadzenDataGridColumn TItem="Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" />
+            <RadzenDataGridColumn TItem="Product" Property="Name" Title="Product Name" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Author" Title="Product Author" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="CategoryId" Title="Product Category" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Publisher" Title="Product Publisher" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="PublishingYear" Title="Product Publishing Year" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Product Price" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="QuantityInStock" Title="Product Quantity in Stock" Sortable="true" />
+        </Columns>
+    </RadzenDataGrid>
+    <RadzenButton Text="Go back" Click="Cancel"></RadzenButton>
+}
+
+else
+{
+    <p>Loading...</p>
+}
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    public List<Product>? Products;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var cat_ = await ProductService.GetProduct(id);
+        Products = new List<Product>() { cat_ };
+    }
+    void Cancel() => NavigationManager.NavigateTo("/categories");
+}

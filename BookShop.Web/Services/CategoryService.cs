@@ -1,62 +1,61 @@
 ﻿using BookShop.Models;
 using BookShop.Web.Interfaces;
 
-namespace BookShop.Web.Services
+namespace BookShop.Web.Services;
+
+public class CategoryService : ICategoryService
 {
-    public class CategoryService : ICategoryService
+    private readonly HttpClient _httpClient;
+
+    public CategoryService(HttpClient httpClient)
     {
-        private readonly HttpClient _httpClient;
+        _httpClient = httpClient;
+    }
 
-        public CategoryService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+    public async Task<List<Category>?> GetCategories()
+    {
+        var categories = await _httpClient.GetFromJsonAsync<List<Category>>("api/categories");
+        return categories;
+    }
 
-        public async Task<List<Category>?> GetCategories()
-        {
-            var categories = await _httpClient.GetFromJsonAsync<List<Category>>("api/categories");
-            return categories;
-        }
+    public async Task<Category?> GetCategory(int id)
+    {
+        var category = await _httpClient.GetFromJsonAsync<Category>($"api/categories/{id}");
+        return category;
+    }
+    public async Task<bool> AddCategory(Category category)
+    {
+        var response= await _httpClient.PostAsJsonAsync("api/categories", category);
+        return response.IsSuccessStatusCode;
+    }
 
-        public async Task<Category?> GetCategory(int id)
-        {
-            var category = await _httpClient.GetFromJsonAsync<Category>($"api/categories/{id}");
-            return category;
-        }
-        public async Task<bool> AddCategory(Category category)
-        {
-            var response= await _httpClient.PostAsJsonAsync("api/categories", category);
-            return response.IsSuccessStatusCode;
-        }
+    public async Task<bool> UpdateCategory(int id, Category category)
+    {
+        var response=await _httpClient.PutAsJsonAsync($"api/categories/{id}", category);
 
-        public async Task<bool> UpdateCategory(int id, Category category)
-        {
-            var response=await _httpClient.PutAsJsonAsync($"api/categories/{id}", category);
+        return response.IsSuccessStatusCode;
+    }
 
-            return response.IsSuccessStatusCode;
-        }
-
-        public async Task DeleteCategory(Category category)
+    public async Task DeleteCategory(Category category)
+    {
+        await _httpClient.DeleteFromJsonAsync($"api/categories/{category.Id}", typeof(Category));
+    }
+    public bool ValidateName(string name)
+    {
+        if (name is null)
         {
-            await _httpClient.DeleteFromJsonAsync($"api/categories/{category.Id}", typeof(Category));
+            return false;
         }
-        public bool ValidateName(string name)
+        var result= _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-name?name={name}");
+        return result.Result;
+    }
+    public bool ValidateDisplayOrder(int? displayOrder)
+    {
+        if (displayOrder is null)
         {
-            if (name is null)
-            {
-                return false;
-            }
-            var result= _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-name?name={name}");
-            return result.Result;
+            return false;
         }
-        public bool ValidateDisplayOrder(int? displayOrder)
-        {
-            if (displayOrder is null)
-            {
-                return false;
-            }
-            var result = _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-displayOrder?order={displayOrder}");
-            return result.Result;
-        }
+        var result = _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-displayOrder?order={displayOrder}");
+        return result.Result;
     }
 }
