@@ -9,8 +9,8 @@ public class Product
     [MaxLength(100)]
     public string? Name { get; set; }
     public string? Author { get; set; }
-    [Required]
     public int CategoryId { get; set; }
+    public Category? Category { get; set; }
     [Required]
     public string? Publisher { get; set; }
     public int PublishingYear { get; set; }

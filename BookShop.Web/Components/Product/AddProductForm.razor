@@ -5,6 +5,7 @@
 @inject IProductService ProductService
 @inject NotificationService NotificationService
 @inject NavigationManager NavigationManager
+@inject ICategoryService CategoryService
 
 <RadzenTemplateForm TItem="Product" Data=@product Submit=@Submit InvalidSubmit="@InvalidSubmit">
     <RadzenFieldset Text="Add product">
@@ -33,8 +34,9 @@
                 <RadzenLabel Text="Category ID" />
             </div>
             <div class="col">
-                <RadzenNumeric Name="CategoryId" @bind-Value=@product.CategoryId class="w-100" />
+                <RadzenDropDown Name="CategoryId" @bind-Value=@product.CategoryId Data=@Categories TextProperty="Name" ValueProperty="Id" Style="width: 100%; max-width: 400px;" />
                 <RadzenRequiredValidator Component="CategoryId" Text="Category is required" Popup=true Style="position: absolute" />
+                <RadzenCustomValidator Component="CategoryId" Validator="@(()=>product.CategoryId!=0)" Text="Category is required" Popup=true />
             </div>
         </div>
 
@@ -82,12 +84,13 @@
     </RadzenFieldset>
 </RadzenTemplateForm>
 
-
 @code {
     public Product product { get; set; } = new();
+    public List<Category>? Categories;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        Categories = await CategoryService.GetCategories();
 
     }
     async Task Submit(Product product)

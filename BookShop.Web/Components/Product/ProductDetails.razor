@@ -37,5 +37,5 @@ else
         var cat_ = await ProductService.GetProduct(id);
         Products = new List<Product>() { cat_ };
     }
-    void Cancel() => NavigationManager.NavigateTo("/categories");
+    void Cancel() => NavigationManager.NavigateTo("/products");
 }

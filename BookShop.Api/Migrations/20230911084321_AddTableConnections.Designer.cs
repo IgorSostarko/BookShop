@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookShop.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230908073956_Products")]
-    partial class Products
+    [Migration("20230911084321_AddTableConnections")]
+    partial class AddTableConnections
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,6 +116,8 @@ namespace BookShop.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Products");
 
                     b.HasData(
@@ -134,7 +136,7 @@ namespace BookShop.Api.Migrations
                         {
                             Id = 2,
                             Author = "Anna Banana",
-                            CategoryId = 3,
+                            CategoryId = 2,
                             Name = "Smart book",
                             Price = 490.6m,
                             Publisher = "Bookfirm",
@@ -145,7 +147,7 @@ namespace BookShop.Api.Migrations
                         {
                             Id = 3,
                             Author = "Wayne Waffles",
-                            CategoryId = 6,
+                            CategoryId = 2,
                             Name = "Manual book",
                             Price = 56m,
                             Publisher = "Getrobook",
@@ -156,7 +158,7 @@ namespace BookShop.Api.Migrations
                         {
                             Id = 4,
                             Author = "Anna Banana",
-                            CategoryId = 5,
+                            CategoryId = 4,
                             Name = "Red book",
                             Price = 15.6m,
                             Publisher = "Bookfirm",
@@ -167,13 +169,24 @@ namespace BookShop.Api.Migrations
                         {
                             Id = 5,
                             Author = "John Johne",
-                            CategoryId = 3,
+                            CategoryId = 2,
                             Name = "Yesbook",
                             Price = 15m,
                             Publisher = "Getrobook",
                             PublishingYear = 2019,
                             QuantityInStock = 17000
                         });
+                });
+
+            modelBuilder.Entity("BookShop.Models.Product", b =>
+                {
+                    b.HasOne("BookShop.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

@@ -20,11 +20,11 @@ public static class DataInitializer
     {
         List<Product> list = new()
         {
-            new Product { Id=1, Name= "Scary book", Author="John Johne", CategoryId=1, Price=49.6M, Publisher="Bookfirm", PublishingYear=2001, QuantityInStock=2023},
-            new Product { Id=2, Name= "Smart book", Author="Anna Banana", CategoryId=3, Price=490.6M, Publisher="Bookfirm", PublishingYear=2003, QuantityInStock=203},
-            new Product { Id=3, Name= "Manual book", Author="Wayne Waffles", CategoryId=6, Price=56M, Publisher="Getrobook", PublishingYear=2012, QuantityInStock=5000},
-            new Product { Id=4, Name= "Red book", Author="Anna Banana", CategoryId=5, Price=15.6M, Publisher="Bookfirm", PublishingYear=2020, QuantityInStock=13},
-            new Product { Id=5, Name= "Yesbook", Author="John Johne", CategoryId=3, Price=15M, Publisher="Getrobook", PublishingYear=2019, QuantityInStock=17000}
+            new Product { Id=1, Name= "Scary book", Author="John Johne", Price=49.6M, CategoryId=1, Publisher="Bookfirm", PublishingYear=2001, QuantityInStock=2023},
+            new Product { Id=2, Name= "Smart book", Author="Anna Banana", Price=490.6M, CategoryId=2, Publisher="Bookfirm", PublishingYear=2003, QuantityInStock=203},
+            new Product { Id=3, Name= "Manual book", Author="Wayne Waffles", Price=56M, CategoryId=2, Publisher="Getrobook", PublishingYear=2012, QuantityInStock=5000},
+            new Product { Id=4, Name= "Red book", Author="Anna Banana", Price=15.6M, CategoryId = 4, Publisher="Bookfirm", PublishingYear=2020, QuantityInStock=13},
+            new Product { Id=5, Name= "Yesbook", Author="John Johne", Price=15M, CategoryId=2, Publisher="Getrobook", PublishingYear=2019, QuantityInStock=17000}
         };
         return list;
     }

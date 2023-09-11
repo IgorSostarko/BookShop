@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookShop.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230904083206_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230911083837_AddedProduct")]
+    partial class AddedProduct
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,44 @@ namespace BookShop.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DisplayOrder = 1,
+                            Name = "Classics"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DisplayOrder = 2,
+                            Name = "Crime"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DisplayOrder = 3,
+                            Name = "Fantasy"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DisplayOrder = 8,
+                            Name = "Manual"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DisplayOrder = 4,
+                            Name = "Fiction"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DisplayOrder = 5,
+                            Name = "Horror"
+                        });
                 });
 #pragma warning restore 612, 618
         }

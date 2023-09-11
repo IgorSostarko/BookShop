@@ -7,7 +7,7 @@
 namespace BookShop.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class Products : Migration
+    public partial class AddTableConnections : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,21 +29,13 @@ namespace BookShop.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "DisplayOrder",
-                value: 3);
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 6,
-                column: "DisplayOrder",
-                value: 5);
 
             migrationBuilder.InsertData(
                 table: "Products",
@@ -51,11 +43,16 @@ namespace BookShop.Api.Migrations
                 values: new object[,]
                 {
                     { 1, "John Johne", 1, "Scary book", 49.6m, "Bookfirm", 2001, 2023 },
-                    { 2, "Anna Banana", 3, "Smart book", 490.6m, "Bookfirm", 2003, 203 },
-                    { 3, "Wayne Waffles", 6, "Manual book", 56m, "Getrobook", 2012, 5000 },
-                    { 4, "Anna Banana", 5, "Red book", 15.6m, "Bookfirm", 2020, 13 },
-                    { 5, "John Johne", 3, "Yesbook", 15m, "Getrobook", 2019, 17000 }
+                    { 2, "Anna Banana", 2, "Smart book", 490.6m, "Bookfirm", 2003, 203 },
+                    { 3, "Wayne Waffles", 2, "Manual book", 56m, "Getrobook", 2012, 5000 },
+                    { 4, "Anna Banana", 4, "Red book", 15.6m, "Bookfirm", 2020, 13 },
+                    { 5, "John Johne", 2, "Yesbook", 15m, "Getrobook", 2019, 17000 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CategoryId",
+                table: "Products",
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
@@ -63,20 +60,6 @@ namespace BookShop.Api.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "DisplayOrder",
-                value: 1);
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 6,
-                column: "DisplayOrder",
-                value: 1);
         }
     }
 }

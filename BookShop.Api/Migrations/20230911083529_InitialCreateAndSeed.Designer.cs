@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookShop.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230904095541_CategoryDatabaseSeed")]
-    partial class CategoryDatabaseSeed
+    [Migration("20230911083529_InitialCreateAndSeed")]
+    partial class InitialCreateAndSeed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,7 +59,7 @@ namespace BookShop.Api.Migrations
                         new
                         {
                             Id = 3,
-                            DisplayOrder = 1,
+                            DisplayOrder = 3,
                             Name = "Fantasy"
                         },
                         new
@@ -77,7 +77,7 @@ namespace BookShop.Api.Migrations
                         new
                         {
                             Id = 6,
-                            DisplayOrder = 1,
+                            DisplayOrder = 5,
                             Name = "Horror"
                         });
                 });
