@@ -35,8 +35,7 @@
             </div>
             <div class="col">
                 <RadzenDropDown Name="CategoryId" @bind-Value=@product.CategoryId Data=@Categories TextProperty="Name" ValueProperty="Id" Style="width: 100%; max-width: 400px;" />
-                <RadzenRequiredValidator Component="CategoryId" Text="Category is required" Popup=true Style="position: absolute" />
-                <RadzenCustomValidator Component="CategoryId" Validator="@(()=>product.CategoryId!=0)" Text="Category is required" Popup=true />
+                <RadzenCustomValidator Component="CategoryId" Validator="@(()=>product.CategoryId!=default)" Text="Category is required" Popup=true />
             </div>
         </div>
 

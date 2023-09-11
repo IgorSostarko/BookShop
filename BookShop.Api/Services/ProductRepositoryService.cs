@@ -16,12 +16,12 @@ namespace BookShop.Api.Services
 
         public async Task<IEnumerable<Product>> GetProductsAsync()
         {
-            var products = await _appDbContext.Products.ToListAsync();
+            var products = await _appDbContext.Products.Include((p)=>p.Category).ToListAsync();
             return products;
         }
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            var product = await _appDbContext.Products.SingleOrDefaultAsync(c => c.Id == id);
+            var product = await _appDbContext.Products.Include((p)=>p.Category).SingleOrDefaultAsync(c => c.Id == id);
             return product;
         }
         public async Task<Product> InsertProduct(Product product)
