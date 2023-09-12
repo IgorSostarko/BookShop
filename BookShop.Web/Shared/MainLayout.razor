@@ -2,16 +2,13 @@
 
 <PageTitle>BookShop.Web</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
+<div class="main">
+    <header>
+        <NavMenu/>
+    </header>
+    <div class="content p-3">
+        @Body
     </div>
-
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
 </div>
 
 <RadzenContextMenu />

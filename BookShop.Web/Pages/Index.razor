@@ -8,14 +8,19 @@
 @inject NotificationService NotificationService
 @inject DialogService DialogService
 
-<RadzenText class="h1">Products</RadzenText>
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Books</h1>
+        <p class="lead">This is our selection of books.</p>
+    </div>
+</div>
 @if (products is not null)
 {
-    <RadzenCard class="rz-mt-12" >
+    <RadzenCard class="rz-mt-12" Variant="Variant.Text">
         <RadzenDataList PageSize="4" WrapItems="true" Data="@products" TItem="Product">
             <Template Context="product">
-                <RadzenCard Class="rz-my-12 rz-mx-3" Style="max-width: 320px;">
-                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" Gap="1rem" Class="rz-p-4">
+                <RadzenCard Class="rz-my-12 rz-mx-3" Style="max-width: 320px; margin-top:0!important">
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-p-4">
                         @if (product.Image is not null)
                         {
                             <RadzenImage Path="@product.Image" Style="width: 100px; height: 100px; border-radius: 50%;" />
