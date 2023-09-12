@@ -1,12 +1,14 @@
 ﻿@page "/product/{id:int}"
 @using BookShop.Models;
+@using System.Globalization;
 @using BookShop.Web.Interfaces;
 @inject IProductService ProductService
 @inject NavigationManager NavigationManager
 
+
 @if (Products is not null)
 {
-    <RadzenDataGrid SelectionMode="DataGridSelectionMode.Single"  Data="@Products" TItem="Product" AllowPaging="true" PageSize="10">
+    @*<RadzenDataGrid SelectionMode="DataGridSelectionMode.Single"  Data="@Products" TItem="Product" AllowPaging="true" PageSize="10">
         <Columns>
             <RadzenDataGridColumn TItem="Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" />
             <RadzenDataGridColumn TItem="Product" Property="Name" Title="Product Name" Sortable="true" />
@@ -14,11 +16,100 @@
             <RadzenDataGridColumn TItem="Product" Property="Category.Name" Title="Product Category" Sortable="true" />
             <RadzenDataGridColumn TItem="Product" Property="Publisher" Title="Product Publisher" Sortable="true" />
             <RadzenDataGridColumn TItem="Product" Property="PublishingYear" Title="Product Publishing Year" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Product Price" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Product Price" Sortable="true">
+                <Template Context="Products">
+                    @string.Format(hr,"{0:C}",Products.Price)
+                </Template>
+            </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Product" Property="QuantityInStock" Title="Product Quantity in Stock" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Image" Title="Image" Filterable=false>
+                <Template Context="Products">
+                    <RadzenStack AlignItems="AlignItems.Center">
+                        @if (Products.Image is not null)
+                        {
+                            <RadzenImage class="img-thumbnail" style="width:130%;" Path="@Products.Image" />
+                        }else{
+                            <a>No image</a>
+                        }
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+
         </Columns>
     </RadzenDataGrid>
-    <RadzenButton Text="Go back" Click="Cancel"></RadzenButton>
+    <RadzenButton Text="Go back" Click="Cancel"></RadzenButton>*@
+
+    <div class="container">
+        <div class="row align-items-center m-5">
+            @if (product.Image is not null)
+            {
+                <div class="col-6">
+                    <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-4">
+                        <RadzenImage Path="@(product.Image)" style="max-height:200px; max-width:200px" />
+                    </RadzenStack>
+                </div>
+                <div class="col-6">
+                    <RadzenText TextStyle="TextStyle.Overline">
+                        Title
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.H3">
+                        @product.Name
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.Overline">
+                        Author
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.H3">
+                        @product.Author
+                    </RadzenText>
+
+                </div>
+            }
+            else
+            {
+                <div class="col-6">
+                    <RadzenText TextStyle="TextStyle.Overline">
+                        Title
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.H3">
+                        @product.Name
+                    </RadzenText>
+
+
+                </div>
+                <div class="col-6">
+                    <RadzenText TextStyle="TextStyle.Overline">
+                        Author
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.H3">
+                        @product.Author
+                    </RadzenText>
+                </div>
+            }
+        </div>
+        <div class="row align-items-center">
+            <div class="col-12">
+                <RadzenCard class="rz-background-color-primary-light rz-shadow-0 rz-border-radius-0 rz-p-8" style="margin: 1rem calc(-1 * var(--rz-card-padding));">
+                    <RadzenText TextStyle="TextStyle.H5" class="rz-color-on-primary-light"><strong>Book information</strong></RadzenText>
+                    <RadzenRow RowGap="0">
+                        <RadzenColumn SizeSM="6">
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Publisher</RadzenText>
+                            <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><b>@(product.Publisher)</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Publishing year</RadzenText>
+                            <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><b>@(product.PublishingYear)</b></RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn SizeSM="6">
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Category</RadzenText>
+                            <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><b>@(product.Category.Name)</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Price</RadzenText>
+                            <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><b>@String.Format(new System.Globalization.CultureInfo("fr-FR"), "{0:C}", product.Price)</b></RadzenText>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenCard>
+            </div>
+        </div>
+        <RadzenButton Shade="Shade.Darker" ButtonStyle="ButtonStyle.Primary" Click="@(()=>Cancel())">Go back</RadzenButton>
+    </div>
+
 }
 
 else
@@ -28,14 +119,16 @@ else
 
 
 @code {
+    CultureInfo hr = new CultureInfo("fr-FR");
     [Parameter]
     public int id { get; set; }
     public List<Product>? Products;
+    public Product product;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var cat_ = await ProductService.GetProduct(id);
-        Products = new List<Product>() { cat_ };
+        product = await ProductService.GetProduct(id);
+        Products = new List<Product>() { product };
     }
-    void Cancel() => NavigationManager.NavigateTo("/products");
+    void Cancel() => NavigationManager.NavigateTo("/");
 }

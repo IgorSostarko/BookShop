@@ -1,12 +1,16 @@
 using BookShop.Web.Interfaces;
 using BookShop.Web.Services;
 using Radzen;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor().AddHubOptions(o=>
+{
+    o.MaximumReceiveMessageSize = 10 * 1024*1024;
+});
 builder.Services.AddRadzenComponents();
 
 builder.Services.AddScoped<ContextMenuService>();

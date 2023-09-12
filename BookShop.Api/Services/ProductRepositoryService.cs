@@ -41,6 +41,7 @@ namespace BookShop.Api.Services
             productToUpdate.CategoryId = product.CategoryId;
             productToUpdate.QuantityInStock= product.QuantityInStock;
             productToUpdate.Price= product.Price;
+            productToUpdate.Image=product.Image;
             _appDbContext.Products.Update(productToUpdate);
             await _appDbContext.SaveChangesAsync();
             return productToUpdate;

@@ -3,6 +3,7 @@
 @using BookShop.Models;
 @using BookShop.Web.Interfaces;
 @using BookShop.Web.Services;
+@using System.Globalization;
 @inject IProductService ProductService
 @inject NotificationService NotificationService
 @inject NavigationManager NavigationManager
@@ -64,7 +65,7 @@
                 <RadzenLabel Text="Price" />
             </div>
             <div class="col">
-                <RadzenNumeric Name="Price" @bind-Value=@product.Price class="w-100" />
+                <RadzenNumeric Culture="hr" Name="Price" @bind-Value=@product.Price class="w-100" Format="C0" />
                 <RadzenRequiredValidator Component="Price" Text="Price is required" Popup=true Style="position: absolute" />
             </div>
         </div>
@@ -78,13 +79,25 @@
                 <RadzenRequiredValidator Component="QuantityInStock" Text="Quantity is required" Popup=true Style="position: absolute" />
             </div>
         </div>
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <RadzenLabel Text="Image" />
+            </div>
+            <div class="col">
+                <RadzenFileInput @bind-Value=@product.Image @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="string" class="w-100"
+                                 Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
+            </div>
 
+        </div>
         <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
         <RadzenButton Text="Cancel" Click="Cancel"></RadzenButton>
     </RadzenFieldset>
 </RadzenTemplateForm>
 
 @code {
+    CultureInfo hr = new CultureInfo("fr-FR");
+    string fileName;
+    long? fileSize;
     [Parameter]
     public int id { get; set; }
     public Product product { get; set; } = new();
@@ -120,5 +133,15 @@
 
     void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
     void Cancel() => NavigationManager.NavigateTo("/products", true);
+
+    void OnChange(string value, string name)
+    {
+        NotificationService.Notify(NotificationSeverity.Success, "Success!", "Succesfuly uploaded.");
+    }
+
+    void OnError(UploadErrorEventArgs args, string name)
+    {
+        NotificationService.Notify(NotificationSeverity.Success, "Error!", "Error with uploading.");
+    }
 
 }

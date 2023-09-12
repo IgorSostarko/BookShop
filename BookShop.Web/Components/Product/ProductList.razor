@@ -1,6 +1,7 @@
 ﻿@page "/products"
 @using BookShop.Models;
 @using BookShop.Web.Interfaces;
+@using System.Globalization;
 @inject IProductService ProductService
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
@@ -10,12 +11,11 @@
 <h1>Products</h1>
 @if (Products is not null)
 {
-    <RadzenButton Click="Details" Text="Details" />
     <RadzenButton Click="AddProduct" Text="Add product" />
     <RadzenButton Click="UpdateProduct" Text="Update product" />
     <RadzenButton Click="DeleteProduct" Text="Delete product" />
 
-    <RadzenDataGrid @ref="grid" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
+    <RadzenDataGrid @ref="grid" Culture="hr" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
         <Columns>
             <RadzenDataGridColumn TItem="Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" />
             <RadzenDataGridColumn TItem="Product" Property="Name" Title="Product Name" Sortable="true" />
@@ -23,8 +23,22 @@
             <RadzenDataGridColumn TItem="Product" Property="Category.Name" Title="Product Category" Sortable="true" />
             <RadzenDataGridColumn TItem="Product" Property="Publisher" Title="Product Publisher" Sortable="true" />
             <RadzenDataGridColumn TItem="Product" Property="PublishingYear" Title="Product Publishing Year" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Product Price" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Product Price" Sortable="true">
+                <Template Context="Products">
+                    @string.Format(hr,"{0:C}",Products.Price)
+                </Template>
+            </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Product" Property="QuantityInStock" Title="Product Quantity in Stock" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Image" Title="Image" Filterable=false>
+                <Template Context="Products">
+                    <RadzenStack AlignItems="AlignItems.Center">
+                        @if (Products.Image is not null){
+                        <RadzenImage class="img-thumbnail" style="width:100px;"  Path="@Products.Image" />
+                        }
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+            
         </Columns>
     </RadzenDataGrid>
 
@@ -39,6 +53,7 @@ else
 
 
 @code {
+    CultureInfo hr = new CultureInfo("fr-FR");
     public RadzenDataGrid<Product> grid;
     public IList<Product>? selected;
     public List<Product>? Products { get; set; }
@@ -90,5 +105,4 @@ else
             NotificationService.Notify(NotificationSeverity.Warning, "Select Product");
         }
     }
-
 }

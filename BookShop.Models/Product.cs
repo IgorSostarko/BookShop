@@ -20,6 +20,6 @@ public class Product
     [Required]
     public int QuantityInStock { get; set; }
 
-
+    public string? Image { get; set; }
 
 }
