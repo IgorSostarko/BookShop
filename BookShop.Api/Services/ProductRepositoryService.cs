@@ -14,10 +14,10 @@ namespace BookShop.Api.Services
             _appDbContext = appDbContext;
         }
 
-        public async Task<IEnumerable<Product>> GetProductsAsync()
+        public Task<IEnumerable<Product>> GetProductsAsync()
         {
-            var products = await _appDbContext.Products.Include((p)=>p.Category).ToListAsync();
-            return products;
+            var products = _appDbContext.Products.Include((p)=>p.Category).ToList();
+            return Task.FromResult<IEnumerable<Product>>(products);
         }
         public async Task<Product?> GetProductByIdAsync(int id)
         {
@@ -59,10 +59,10 @@ namespace BookShop.Api.Services
             return await _appDbContext.Products.Where(a => a.Name == name).AnyAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsOfCategoryAsync(int categoryId)
+        public Task<IEnumerable<Product>> GetProductsOfCategoryAsync(int categoryId)
         {
-            var products = await _appDbContext.Products.Where((p)=>p.CategoryId==categoryId).Include((p) => p.Category).ToListAsync();
-            return products;
+            var products = _appDbContext.Products.Where((p)=>p.CategoryId==categoryId).Include((p) => p.Category).ToList();
+            return Task.FromResult<IEnumerable<Product>>(products);
         }
     }
 }

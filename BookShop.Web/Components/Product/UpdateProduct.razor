@@ -1,8 +1,13 @@
 ﻿@page "/product/edit/{id:int}"
 
 
-
-<RadzenTemplateForm TItem="Models.Product" Data=@product Submit=@Submit InvalidSubmit="@InvalidSubmit">
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Edit</h1>
+        <p class="lead">Edit product.</p>
+    </div>
+</div>
+<RadzenTemplateForm TItem="Models.Product" Data=@product Submit=@Submit InvalidSubmit="@InvalidSubmit" class="p-3">
     <ProductComponent Categories="Categories" Name=@name Model="product" Text="Edit product"></ProductComponent>
 </RadzenTemplateForm>
 

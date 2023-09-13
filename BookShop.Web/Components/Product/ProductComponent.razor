@@ -1,6 +1,6 @@
 ﻿
 
-<RadzenFieldset Text=@Text>
+<RadzenFieldset Style="border:0;" class="p-4">
     <div class="row mb-5">
         <div class="col-md-4">
             <RadzenLabel Text="Name" />
@@ -8,7 +8,7 @@
         <div class="col">
             <RadzenTextBox style="display: block" Name="Name" @bind-Value=@Model.Name class="w-100" />
             <RadzenRequiredValidator Component="Name" Text="Name is required" Popup=true Style="position: absolute" />
-            <RadzenCustomValidator Component="Name" Validator="@(()=>NameValidator(Model.Name))" Text="Name already exists" />
+            <RadzenCustomValidator Component="Name" Validator="@(()=>NameValidator(Model.Name))" Popup=true Text="Name already exists" />
         </div>
     </div>
 

@@ -1,6 +1,11 @@
 ﻿@page "/category/add"
 
-
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Add</h1>
+        <p class="lead">Add new category.</p>
+    </div>
+</div>
 <RadzenTemplateForm TItem="Models.Category" Data=@category Submit=@Submit InvalidSubmit="@InvalidSubmit">
     <CategoryComponent Model="category" Text="Add category"></CategoryComponent>
 </RadzenTemplateForm>

@@ -70,3 +70,7 @@ a, .btn-link {
     .rz-g{
         justify-content:center;
     }
+
+    .rz-cell-data{
+        white-space:normal !important;
+    }

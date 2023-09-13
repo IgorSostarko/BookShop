@@ -26,7 +26,7 @@ public class ProductsController : ControllerBase
         }
         else
         {
-            var products=await _productRepositoryService.GetProductsOfCategoryAsync(categoryId??0);
+            var products=await _productRepositoryService.GetProductsOfCategoryAsync(categoryId??1);
             return Ok(products);
         }
         

@@ -15,20 +15,20 @@
         <RadzenButton Click="DeleteProduct" Text="Delete product" Icon="delete_forever"/>
     </RadzenStack>
     <br />
-    <RadzenDataGrid @ref="grid" Culture="hr" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Models.Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected AllowColumnResize=true ColumnWidth="100px">
+    <RadzenDataGrid Style="white-space:pre-wrap!important" @ref="grid" Culture="hr" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Models.Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected AllowColumnResize=true ColumnWidth="100px">
         <Columns>
-            <RadzenDataGridColumn TItem="Models.Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" Frozen=true/>
-            <RadzenDataGridColumn TItem="Models.Product" Property="Name" Title="Product Name" Sortable="true"/>
-            <RadzenDataGridColumn TItem="Models.Product" Property="Author" Title="Product Author" Sortable="true" />
-            <RadzenDataGridColumn TItem="Models.Product" Property="Category.Name" Title="Product Category" Sortable="true" />
-            <RadzenDataGridColumn TItem="Models.Product" Property="Publisher" Title="Product Publisher" Sortable="true" />
-            <RadzenDataGridColumn TItem="Models.Product" Property="PublishingYear" Title="Product Publishing Year" Sortable="true" />
-            <RadzenDataGridColumn TItem="Models.Product" Property="Price" Title="Product Price" Sortable="true">
+            <RadzenDataGridColumn TItem="Models.Product" Property="Id" Title="Id" Sortable="true" Filterable="false" Frozen=true Width="50px"/>
+            <RadzenDataGridColumn TItem="Models.Product" Property="Name" Title="Name" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="Author" Title="Author" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="Category.Name" Title="Category" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="Publisher" Title="Publisher" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="PublishingYear" Title="Publishing Year" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="Price" Title="Price" Sortable="true">
                 <Template Context="Products">
                     @string.Format(hr,"{0:C}",Products.Price)
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Models.Product" Property="QuantityInStock" Title="Product Quantity in Stock" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="QuantityInStock" Title="Quantity in Stock" Sortable="true" />
             <RadzenDataGridColumn TItem="Models.Product" Property="Image" Title="Image" Filterable=false>
                 <Template Context="Products">
                     <RadzenStack AlignItems="AlignItems.Center">

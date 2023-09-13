@@ -42,7 +42,7 @@ public class CategoryService : ICategoryService
     }
     public bool ValidateName(string name)
     {
-        if (name is null)
+        if (name is null || name=="")
         {
             return false;
         }

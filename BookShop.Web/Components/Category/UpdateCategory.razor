@@ -1,7 +1,12 @@
 ﻿@page "/category/edit/{id:int}"
 
 
-
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Edit</h1>
+        <p class="lead">Edit new category.</p>
+    </div>
+</div>
 <RadzenTemplateForm TItem="Models.Category" Data=@Category Submit=@Submit InvalidSubmit="@InvalidSubmit">
     <CategoryComponent Model="Category" OldData="category1" Text="Edit category"></CategoryComponent>
 </RadzenTemplateForm>

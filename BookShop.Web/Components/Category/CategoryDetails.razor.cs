@@ -1,10 +1,6 @@
 ﻿using BookShop.Web.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-using System.Net.NetworkInformation;
-
-using BookShop.Models;
-using BookShop.Web.Interfaces;
 using System.Globalization;
 
 namespace BookShop.Web.Components.Category;

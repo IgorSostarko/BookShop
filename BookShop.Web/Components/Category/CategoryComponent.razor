@@ -1,5 +1,5 @@
 ﻿
-<RadzenFieldset Text=@Text>
+<RadzenFieldset Style="border:0;" class="p-4">
     <div class="row mb-5">
         <div class="col-md-4">
             <RadzenLabel Text="Name" />
@@ -17,7 +17,7 @@
         <div class="col">
             <RadzenNumeric style="display: block" Name="DisplayOrder" @bind-Value=@Model.DisplayOrder class="w-100" />
             <RadzenRequiredValidator Component="DisplayOrder" Text="Display order is required" Popup=true Style="position: absolute" />
-            <RadzenCustomValidator Component="DisplayOrder" Validator="@(()=>DisplayOrderValidator(Model.DisplayOrder))" Text="Display order already exists" />
+            <RadzenCustomValidator Component="DisplayOrder" Validator="@(()=>DisplayOrderValidator(Model.DisplayOrder))" Text="Display order already exists" Popup=true/>
         </div>
     </div>
     <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Text="Submit" Icon="task_alt"></RadzenButton>

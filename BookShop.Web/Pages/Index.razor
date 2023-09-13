@@ -23,7 +23,10 @@
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-p-4">
                         @if (product.Image is not null)
                         {
-                            <RadzenImage Path="@product.Image" Style="width: 100px; height: 100px; border-radius: 50%;" />
+                            <div style="width:100px; height:100px; display:flex; align-items:center; align-content:center;">
+                                <RadzenImage Path="@product.Image" Style="max-width:100px; max-height:100px; aspect-ratio:auto;" />
+                            </div>
+                            
                         }
                         <RadzenStack Gap="0">
                             <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Title</RadzenText>
