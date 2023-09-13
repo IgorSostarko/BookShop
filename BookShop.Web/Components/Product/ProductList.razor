@@ -7,18 +7,24 @@
 @inject NotificationService NotificationService
 @inject DialogService DialogService
 
-<br /><br />
-<h1>Products</h1>
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Products</h1>
+        <p class="lead">List of products.</p>
+    </div>
+</div>
 @if (Products is not null)
 {
-    <RadzenButton Click="AddProduct" Text="Add product" />
-    <RadzenButton Click="UpdateProduct" Text="Update product" />
-    <RadzenButton Click="DeleteProduct" Text="Delete product" />
-
-    <RadzenDataGrid @ref="grid" Culture="hr" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="1rem" Wrap="FlexWrap.Wrap">
+        <RadzenButton Click="AddProduct" Text="Add product" Icon="note_add"/>
+        <RadzenButton Click="UpdateProduct" Text="Update product" Icon="autorenew"/>
+        <RadzenButton Click="DeleteProduct" Text="Delete product" Icon="delete_forever"/>
+    </RadzenStack>
+    <br />
+    <RadzenDataGrid @ref="grid" Culture="hr" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected AllowColumnResize=true ColumnWidth="100px">
         <Columns>
-            <RadzenDataGridColumn TItem="Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" />
-            <RadzenDataGridColumn TItem="Product" Property="Name" Title="Product Name" Sortable="true" />
+            <RadzenDataGridColumn TItem="Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" Frozen=true/>
+            <RadzenDataGridColumn TItem="Product" Property="Name" Title="Product Name" Sortable="true"/>
             <RadzenDataGridColumn TItem="Product" Property="Author" Title="Product Author" Sortable="true" />
             <RadzenDataGridColumn TItem="Product" Property="Category.Name" Title="Product Category" Sortable="true" />
             <RadzenDataGridColumn TItem="Product" Property="Publisher" Title="Product Publisher" Sortable="true" />

@@ -94,47 +94,6 @@
 </RadzenTemplateForm>
 
 @code {
-    CultureInfo hr = new CultureInfo("fr-FR");
-    string fileName;
-    long? fileSize;
-    public Product product { get; set; } = new();
-    public List<Category>? Categories;
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        Categories = await CategoryService.GetCategories();
-
-    }
-    async Task Submit(Product product)
-    {
-
-        var isCreated= await ProductService.AddProduct(product);
-        if (isCreated)
-        {
-            NotificationService.Notify(NotificationSeverity.Success, "Success!", "Succesfuly added to database.");
-            NavigationManager.NavigateTo("/products");
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Error, "Error!", "Could not add to database.");
-        }
-
-    }
-    bool NameValidator(string name)
-    {
-        var checker = ProductService.ValidateName(name);
-        return !checker;
-    }
-    void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
-    void Cancel() => NavigationManager.NavigateTo("/products");
-    void OnChange(string value, string name)
-    {
-        NotificationService.Notify(NotificationSeverity.Success, "Success!", "Succesfuly uploaded.");
-    }
-
-    void OnError(UploadErrorEventArgs args, string name)
-    {
-        NotificationService.Notify(NotificationSeverity.Error, "Error!", "Error with uploading.");
-    }
+   
 
 }
