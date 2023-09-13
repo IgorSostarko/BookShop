@@ -55,9 +55,11 @@
 }
 else
 {
-    <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
-        <Template>Loading...</Template>
-    </RadzenProgressBarCircular>
+    <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12">
+        <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+            <Template>Loading...</Template>
+        </RadzenProgressBarCircular>
+    </RadzenStack>
 }
 
 @code {

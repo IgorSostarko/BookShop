@@ -1,78 +1,13 @@
 ﻿@page "/category/edit/{id:int}"
 
-@using BookShop.Models;
-@using BookShop.Web.Interfaces;
-@using BookShop.Web.Services;
-@inject ICategoryService CategoryService
-@inject NotificationService NotificationService
-@inject NavigationManager NavigationManager
 
-<RadzenTemplateForm TItem="Category" Data=@Category Submit=@Submit InvalidSubmit="@InvalidSubmit">
-    <RadzenFieldset Text="Edit category">
-        <div class="row mb-5">
-            <div class="col-md-4">
-                <RadzenLabel Text="Name" />
-            </div>
-            <div class="col">
-                <RadzenTextBox style="display: block" Name="Name" @bind-Value=@Category.Name class="w-100" />
-                <RadzenRequiredValidator Component="Name" Text="Name is required" Popup=true Style="position: absolute" />
-                <RadzenCustomValidator Component="Name" Validator="@(()=>NameValidator(Category.Name))" Text="Name already exists" />
-            </div>
-        </div>
-        <div class="row mb-5">
-            <div class="col-md-4">
-                <RadzenLabel Text="Display order" />
-            </div>
-            <div class="col">
-                <RadzenNumeric style="display: block" Name="DisplayOrder" @bind-Value=@Category.DisplayOrder class="w-100" />
-                <RadzenRequiredValidator Component="DisplayOrder" Text="Display order is required" Popup=true Style="position: absolute" />
-                <RadzenCustomValidator Component="DisplayOrder" Validator="@(()=>DisplayOrderValidator(Category.DisplayOrder))" Text="Display order already exists" />
-            </div>
-        </div>
-        <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-        <RadzenButton Text="Cancel" Click="Cancel"></RadzenButton>
-    </RadzenFieldset>
+
+<RadzenTemplateForm TItem="Models.Category" Data=@Category Submit=@Submit InvalidSubmit="@InvalidSubmit">
+    <CategoryComponent Model="Category" OldData="category1" Text="Edit category"></CategoryComponent>
 </RadzenTemplateForm>
 
 
 @code {
-    [Parameter]
-    public int id { get; set; }
-    public Category Category { get; set; } = new();
-    public Category category1;
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        Category = await CategoryService.GetCategory(id);
-        category1 = new() { Id = Category.Id, DisplayOrder = Category.DisplayOrder, Name = Category.Name };
-    }
-    async Task Submit(Category category)
-    {
-        var isSuccess= await CategoryService.UpdateCategory(id, category);
-        if (isSuccess)
-        {
-            NotificationService.Notify(NotificationSeverity.Success, "Success!", "Updated succesfuly.");
-            NavigationManager.NavigateTo("/categories");
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Error, "Error!", "Could not update.");
-        }
-
-    }
-    bool NameValidator(string name)
-    {
-        if (name == category1.Name) return true;
-        var checker = CategoryService.ValidateName(name);
-        return !checker;
-    }
-    bool DisplayOrderValidator(int displayOrder)
-    {
-        if (displayOrder == category1.DisplayOrder) return true;
-        var checker = CategoryService.ValidateDisplayOrder(displayOrder);
-        return !checker;
-    }
-    void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
-    void Cancel() => NavigationManager.NavigateTo("/categories", true);
+    
 
 }

@@ -58,5 +58,11 @@ namespace BookShop.Api.Services
         {
             return await _appDbContext.Products.Where(a => a.Name == name).AnyAsync();
         }
+
+        public async Task<IEnumerable<Product>> GetProductsOfCategoryAsync(int categoryId)
+        {
+            var products = await _appDbContext.Products.Where((p)=>p.CategoryId==categoryId).Include((p) => p.Category).ToListAsync();
+            return products;
+        }
     }
 }

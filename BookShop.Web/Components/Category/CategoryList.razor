@@ -1,25 +1,27 @@
 ﻿@page "/categories"
-@using BookShop.Models;
-@using BookShop.Web.Interfaces;
-@inject ICategoryService CategoryService
-@inject NavigationManager NavigationManager
-@inject NotificationService NotificationService
-@inject DialogService DialogService
 
-<br /><br />
-<h1>Categories</h1>
+
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Categories</h1>
+        <p class="lead">List of categories.</p>
+    </div>
+</div>
+
 @if (Categories is not null)
 {
-    <RadzenButton Click="Details" Text="Details" />
-    <RadzenButton Click="AddCategory" Text="Add category" />
-    <RadzenButton Click="UpdateCategory" Text="Update category" />
-
-    <RadzenButton Click="DeleteCategory" Text="Delete category" />
-    <RadzenDataGrid @ref="grid" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Categories" TItem="Category" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="1rem" Wrap="FlexWrap.Wrap">
+        <RadzenButton Click="Details" Text="Details" Icon="info_outline"/>
+        <RadzenButton Click="AddCategory" Text="Add category" Icon="note_add" />
+        <RadzenButton Click="UpdateCategory" Text="Edit category" Icon="edit" />
+        <RadzenButton Click="DeleteCategory" Text="Delete category" Icon="delete_forever"/>
+    </RadzenStack>
+    <br />
+    <RadzenDataGrid @ref="grid" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Categories" TItem="Models.Category" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>
         <Columns>
-            <RadzenDataGridColumn TItem="Category" Property="Id" Title="Category Id" Sortable="true" Filterable="false" />
-            <RadzenDataGridColumn TItem="Category" Property="Name" Title="Category Name" Sortable="true" />
-            <RadzenDataGridColumn TItem="Category" Property="DisplayOrder" Title="Category Order" Sortable="true" Filterable="false" />
+            <RadzenDataGridColumn TItem="Models.Category" Property="Id" Title="Category Id" Sortable="true" Filterable="false" />
+            <RadzenDataGridColumn TItem="Models.Category" Property="Name" Title="Category Name" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Category" Property="DisplayOrder" Title="Category Order" Sortable="true" Filterable="false" />
         </Columns>
     </RadzenDataGrid>
 
@@ -27,63 +29,15 @@
 }
 else
 {
-    <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
-        <Template>Loading...</Template>
-    </RadzenProgressBarCircular>
+    <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12">
+        <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+            <Template>Loading...</Template>
+        </RadzenProgressBarCircular>
+    </RadzenStack>
 }
 
 
 @code {
-    public RadzenDataGrid<Category> grid;
-    public IList<Category>? selected;
-    public List<Category>? Categories { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        Categories = await CategoryService.GetCategories();
-    }
-    public void Details()
-    {
-        if (selected is not null)
-        {
-            NavigationManager.NavigateTo($"category/{selected[0].Id}");
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Warning, "Select Category");
-        }
-    }
-    public void AddCategory()
-    {
-        NavigationManager.NavigateTo($"category/add");
-    }
-    public void UpdateCategory()
-    {
-        if (selected is not null)
-        {
-            NavigationManager.NavigateTo($"category/edit/{selected.First().Id}");
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Warning, "Select Category");
-        }
-    }
-
-    public async Task DeleteCategory()
-    {
-        if (selected is not null)
-        {
-            var confirmDelete=await DialogService.Confirm($"Delete item with id {selected[0].Id}?", "Confirm", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
-            if (confirmDelete.GetValueOrDefault())
-            {
-                await CategoryService.DeleteCategory(selected.First());
-                NavigationManager.NavigateTo("/categories", true);
-            }
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Warning, "Select Category");
-        }
-    }
+    
 
 }

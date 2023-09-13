@@ -49,4 +49,10 @@ public class ProductService:IProductService
         var result = _httpClient.GetFromJsonAsync<bool>($"api/products/validate-name?name={name}");
         return result.Result;
     }
+
+    public async Task<List<Product>?> GetProductsByCategory(int categoryId)
+    {
+        var products = await _httpClient.GetFromJsonAsync<List<Product>>($"api/products?categoryId={categoryId}");
+        return products;
+    }
 }

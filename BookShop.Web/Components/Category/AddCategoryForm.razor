@@ -1,72 +1,11 @@
 ﻿@page "/category/add"
-@using BookShop.Models;
-@using BookShop.Web.Interfaces;
-@using BookShop.Web.Services;
-@inject ICategoryService CategoryService
-@inject NotificationService NotificationService
-@inject NavigationManager NavigationManager
 
-<RadzenTemplateForm TItem="Category" Data=@category Submit=@Submit InvalidSubmit="@InvalidSubmit">
-    <RadzenFieldset Text="Add category">
-        <div class="row mb-5">
-            <div class="col-md-4">
-                <RadzenLabel Text="Name" />
-            </div>
-            <div class="col">
-                <RadzenTextBox style="display: block" Name="Name" @bind-Value=@category.Name class="w-100" />
-                <RadzenRequiredValidator Component="Name" Text="Name is required" Popup=true Style="position: absolute"/>
-                <RadzenCustomValidator Component="Name" Validator="@(()=>NameValidator(category.Name))" Text="Name already exists" />
-            </div>
-        </div>
-        <div class="row mb-5">
-            <div class="col-md-4">
-                    <RadzenLabel Text="Display order" />
-            </div>
-            <div class="col">
-                <RadzenNumeric style="display: block" Name="DisplayOrder" @bind-Value=@category.DisplayOrder  class="w-100" />
-                <RadzenRequiredValidator Component="DisplayOrder" Text="Display order is required" Popup=true Style="position: absolute"/>
-                <RadzenCustomValidator Component="DisplayOrder" Validator="@(()=>DisplayOrderValidator(category.DisplayOrder))" Text="Display order already exists" />
-            </div>
-        </div>
-        <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" ></RadzenButton>
-        <RadzenButton Text="Cancel" Click="Cancel"></RadzenButton>
-    </RadzenFieldset>
+
+<RadzenTemplateForm TItem="Models.Category" Data=@category Submit=@Submit InvalidSubmit="@InvalidSubmit">
+    <CategoryComponent Model="category" Text="Add category"></CategoryComponent>
 </RadzenTemplateForm>
 
 
 @code {
-    public Category category { get; set; } = new();
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-    }
-    async Task Submit(Category category)
-    {
-
-        var isCreated= await CategoryService.AddCategory(category);
-        if (isCreated)
-        {
-            NotificationService.Notify(NotificationSeverity.Success, "Success!", "Succesfuly added to database.");
-            NavigationManager.NavigateTo("/categories");
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Error, "Error!", "Could not add to database.");
-        }
-
-    }
-    bool NameValidator(string name)
-    {
-        var checker = CategoryService.ValidateName(name);
-        return !checker;
-    }
-    bool DisplayOrderValidator(int displayOrder)
-    {
-        var checker = CategoryService.ValidateDisplayOrder(displayOrder);
-        return !checker;
-    }
-    void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
-    void Cancel() => NavigationManager.NavigateTo("/categories");
-
+    
 }

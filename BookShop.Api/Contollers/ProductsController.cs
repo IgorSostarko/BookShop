@@ -17,11 +17,19 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+    public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] int? categoryId)
     {
-        var products = await _productRepositoryService.GetProductsAsync();
-
-        return Ok(products);
+        if (categoryId is null)
+        {
+            var products = await _productRepositoryService.GetProductsAsync();
+            return Ok(products);
+        }
+        else
+        {
+            var products=await _productRepositoryService.GetProductsOfCategoryAsync(categoryId??0);
+            return Ok(products);
+        }
+        
     }
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProductById(int id)

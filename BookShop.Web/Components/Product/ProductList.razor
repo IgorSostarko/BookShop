@@ -1,11 +1,5 @@
 ﻿@page "/products"
-@using BookShop.Models;
-@using BookShop.Web.Interfaces;
-@using System.Globalization;
-@inject IProductService ProductService
-@inject NavigationManager NavigationManager
-@inject NotificationService NotificationService
-@inject DialogService DialogService
+
 
 <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
     <div class="container">
@@ -17,25 +11,25 @@
 {
     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="1rem" Wrap="FlexWrap.Wrap">
         <RadzenButton Click="AddProduct" Text="Add product" Icon="note_add"/>
-        <RadzenButton Click="UpdateProduct" Text="Update product" Icon="autorenew"/>
+        <RadzenButton Click="UpdateProduct" Text="Edit product" Icon="edit" />
         <RadzenButton Click="DeleteProduct" Text="Delete product" Icon="delete_forever"/>
     </RadzenStack>
     <br />
-    <RadzenDataGrid @ref="grid" Culture="hr" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected AllowColumnResize=true ColumnWidth="100px">
+    <RadzenDataGrid @ref="grid" Culture="hr" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Products" TItem="Models.Product" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected AllowColumnResize=true ColumnWidth="100px">
         <Columns>
-            <RadzenDataGridColumn TItem="Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" Frozen=true/>
-            <RadzenDataGridColumn TItem="Product" Property="Name" Title="Product Name" Sortable="true"/>
-            <RadzenDataGridColumn TItem="Product" Property="Author" Title="Product Author" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Category.Name" Title="Product Category" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Publisher" Title="Product Publisher" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="PublishingYear" Title="Product Publishing Year" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Product Price" Sortable="true">
+            <RadzenDataGridColumn TItem="Models.Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" Frozen=true/>
+            <RadzenDataGridColumn TItem="Models.Product" Property="Name" Title="Product Name" Sortable="true"/>
+            <RadzenDataGridColumn TItem="Models.Product" Property="Author" Title="Product Author" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="Category.Name" Title="Product Category" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="Publisher" Title="Product Publisher" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="PublishingYear" Title="Product Publishing Year" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="Price" Title="Product Price" Sortable="true">
                 <Template Context="Products">
                     @string.Format(hr,"{0:C}",Products.Price)
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Product" Property="QuantityInStock" Title="Product Quantity in Stock" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Image" Title="Image" Filterable=false>
+            <RadzenDataGridColumn TItem="Models.Product" Property="QuantityInStock" Title="Product Quantity in Stock" Sortable="true" />
+            <RadzenDataGridColumn TItem="Models.Product" Property="Image" Title="Image" Filterable=false>
                 <Template Context="Products">
                     <RadzenStack AlignItems="AlignItems.Center">
                         @if (Products.Image is not null){
@@ -52,63 +46,15 @@
 }
 else
 {
-    <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
-        <Template>Loading...</Template>
-    </RadzenProgressBarCircular>
+    <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12">
+        <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+            <Template>Loading...</Template>
+        </RadzenProgressBarCircular>
+    </RadzenStack>
+    
 }
 
 
 @code {
-    CultureInfo hr = new CultureInfo("fr-FR");
-    public RadzenDataGrid<Product> grid;
-    public IList<Product>? selected;
-    public List<Product>? Products { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        Products = await ProductService.GetProducts();
-    }
-    public void Details()
-    {
-        if (selected is not null)
-        {
-            NavigationManager.NavigateTo($"product/{selected[0].Id}");
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Warning, "Select Product");
-        }
-    }
-    public void AddProduct()
-    {
-        NavigationManager.NavigateTo($"product/add");
-    }
-    public void UpdateProduct()
-    {
-        if (selected is not null)
-        {
-            NavigationManager.NavigateTo($"product/edit/{selected.First().Id}");
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Warning, "Select Product");
-        }
-    }
-
-    public async Task DeleteProduct()
-    {
-        if (selected is not null)
-        {
-            var confirmDelete=await DialogService.Confirm($"Delete item with id {selected[0].Id}?", "Confirm", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
-            if (confirmDelete.GetValueOrDefault())
-            {
-                await ProductService.DeleteProduct(selected.First());
-                NavigationManager.NavigateTo("/products", true);
-            }
-        }
-        else
-        {
-            NotificationService.Notify(NotificationSeverity.Warning, "Select Product");
-        }
-    }
+   
 }

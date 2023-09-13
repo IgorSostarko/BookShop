@@ -1,0 +1,87 @@
+﻿
+
+<RadzenFieldset Text=@Text>
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <RadzenLabel Text="Name" />
+        </div>
+        <div class="col">
+            <RadzenTextBox style="display: block" Name="Name" @bind-Value=@Model.Name class="w-100" />
+            <RadzenRequiredValidator Component="Name" Text="Name is required" Popup=true Style="position: absolute" />
+            <RadzenCustomValidator Component="Name" Validator="@(()=>NameValidator(Model.Name))" Text="Name already exists" />
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <RadzenLabel Text="Author" />
+        </div>
+        <div class="col">
+            <RadzenTextBox style="display: block" Name="Author" @bind-Value=@Model.Author class="w-100" />
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <RadzenLabel Text="Category ID" />
+        </div>
+        <div class="col">
+            <RadzenDropDown Name="CategoryId" @bind-Value=@Model.CategoryId Data=@Categories TextProperty="Name" ValueProperty="Id" Style="width: 100%; max-width: 400px;" />
+            <RadzenCustomValidator Component="CategoryId" Validator="@(()=>Model.CategoryId!=default)" Text="Category is required" Popup=true />
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <RadzenLabel Text="Publisher" />
+        </div>
+        <div class="col">
+            <RadzenTextBox style="display: block;" Name="Publisher" @bind-Value=@Model.Publisher class="w-100" />
+            <RadzenRequiredValidator Component="Publisher" Text="Publisher is required" Popup=true Style="position: absolute" />
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <RadzenLabel Text="Publishing year" />
+        </div>
+        <div class="col">
+            <RadzenNumeric Name="Publishing year" @bind-Value=@Model.PublishingYear class="w-100" />
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <RadzenLabel Text="Price" />
+        </div>
+        <div class="col">
+            <RadzenNumeric Culture="hr" Name="Price" @bind-Value=@Model.Price class="w-100" Format="C0" />
+            <RadzenRequiredValidator Component="Price" Text="Price is required" Popup=true Style="position: absolute" />
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <RadzenLabel Text="Quantity In Stock" />
+        </div>
+        <div class="col">
+            <RadzenNumeric Name="QuantityInStock" @bind-Value=@Model.QuantityInStock class="w-100" />
+            <RadzenRequiredValidator Component="QuantityInStock" Text="Quantity is required" Popup=true Style="position: absolute" />
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <RadzenLabel Text="Image" />
+        </div>
+        <div class="col">
+            <RadzenFileInput @bind-Value=@Model.Image @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="string" class="w-100"
+                             Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) />
+        </div>
+
+    </div>
+    <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Text="Submit" Icon="task_alt"></RadzenButton>
+    <RadzenButton Text="Cancel" Click="Cancel" ButtonStyle="ButtonStyle.Danger" Icon="highlight_off"></RadzenButton>
+</RadzenFieldset>
+@code {
+    
+}

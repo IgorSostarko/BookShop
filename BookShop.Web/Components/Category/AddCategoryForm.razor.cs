@@ -1,34 +1,36 @@
 ﻿using BookShop.Web.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-namespace BookShop.Web.Components.Product;
 
-public partial class AddProductForm
+namespace BookShop.Web.Components.Category;
+
+public partial class AddCategoryForm
 {
     [Inject]
     public IProductService? ProductService { get; set; }
     [Inject]
-    public NotificationService? NotificationService { get; set; }
-    [Inject]
     public NavigationManager? NavigationManager { get; set; }
     [Inject]
+    public NotificationService? NotificationService { get; set; }
+    [Inject]
+    public DialogService? DialogService { get; set; }
+    [Inject]
     public ICategoryService? CategoryService { get; set; }
-    public Models.Product Product { get; set; } = new();
-    public List<Models.Category>? Categories;
+    [Parameter]
+    public Models.Category category { get; set; } = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Categories = await CategoryService.GetCategories();
 
     }
-    async Task Submit(Models.Product product)
+    async Task Submit(Models.Category category)
     {
 
-        var isCreated = await ProductService.AddProduct(product);
+        var isCreated = await CategoryService.AddCategory(category);
         if (isCreated)
         {
             NotificationService.Notify(NotificationSeverity.Success, "Success!", "Succesfuly added to database.");
-            NavigationManager.NavigateTo("/products");
+            NavigationManager.NavigateTo("/categories");
         }
         else
         {
@@ -36,5 +38,7 @@ public partial class AddProductForm
         }
 
     }
+
     void InvalidSubmit() => NotificationService.Notify(NotificationSeverity.Error, "Error!", "Invalid data.");
+
 }

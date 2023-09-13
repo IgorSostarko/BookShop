@@ -1,35 +1,105 @@
 ﻿@page "/category/{id:int}"
-@using BookShop.Models;
-@using BookShop.Web.Interfaces;
-@inject ICategoryService CategoryService
-@inject NavigationManager NavigationManager
+
+
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Category</h1>
+        <p class="lead">Category info.</p>
+    </div>
+</div>
 
 @if (category is not null)
 {
-    <RadzenDataGrid Data="@category" EditMode="DataGridEditMode.Single">
-        <Columns>
-            <RadzenDataGridColumn TItem="Category" Property="Name" Title="Category Name" Sortable="true" />
-            <RadzenDataGridColumn TItem="Category" Property="DisplayOrder" Title="Category Order" Sortable="true" Filterable="false" />
-        </Columns>
-    </RadzenDataGrid>
-    <RadzenButton Text="Go back" Click="Cancel"></RadzenButton>
+    <div class="container">
+        <div class="row align-items-center m-5">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <RadzenCard class="rz-background-color-primary-light rz-shadow-0 rz-border-radius-0 rz-p-8" style="margin: 1rem calc(-1 * var(--rz-card-padding));">
+                        <RadzenRow RowGap="0">
+                            <RadzenColumn SizeSM="6">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Id</RadzenText>
+                                <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><b>@(category.Id)</b></RadzenText>
+                            </RadzenColumn>
+                            <RadzenColumn SizeSM="6">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Name</RadzenText>
+                                <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><b>@(category.Name)</b></RadzenText>
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenCard>
+                    <RadzenButton Text="Go back" Click="Cancel" Icon="arrow_back"></RadzenButton>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+        <div class="container">
+            <h1 class="display-4">Products</h1>
+            <p class="lead">Category products.</p>
+        </div>
+    </div>
+    @if (products is not null && products.Count > 0)
+    {
+        <RadzenCard class="rz-mt-12" Variant="Variant.Text">
+            <RadzenDataList PageSize="4" WrapItems="true" Data="@products" TItem="Models.Product">
+                <Template Context="product">
+                    <RadzenCard Class="rz-my-12 rz-mx-3" Style="max-width: 320px; margin-top:0!important">
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-p-4">
+                            @if (product.Image is not null)
+                            {
+                                <RadzenImage Path="@product.Image" Style="width: 100px; height: 100px; border-radius: 50%;" />
+                            }
+                            <RadzenStack Gap="0">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Title</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1"><b>@product.Name</b></RadzenText>
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Author</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1"><b>@product.Author</b></RadzenText>
+                            </RadzenStack>
+                        </RadzenStack>
+                        <RadzenCard class="rz-background-color-primary-light rz-shadow-0 rz-border-radius-0 rz-p-8" style="margin: 1rem calc(-1 * var(--rz-card-padding));">
+                            <RadzenRow RowGap="0">
+                                <RadzenColumn SizeSM="6">
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Category</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@product.Category.Name</b></RadzenText>
+                                </RadzenColumn>
+                                <RadzenColumn SizeSM="6">
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Price</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b> @string.Format(hr,"{0:C}",product.Price)</b></RadzenText>
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenCard>
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0">
+                            <RadzenButton Variant="Variant.Text" class="rz-text-secondary-color" Text="Info" Click="@(args=>GetDetails(product.Id))" />
+                            <RadzenButton Variant="Variant.Text" Text="Add to cart" />
+                        </RadzenStack>
+                    </RadzenCard>
+                </Template>
+            </RadzenDataList>
+        </RadzenCard>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row align-items-center m-5" style="text-align:center!important;">
+                <h4>No items for selected category.</h4>
+            </div>
+        </div>
+    }
 }
 
 else
 {
-    <p>Loading...</p>
+    <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12">
+        <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+            <Template>Loading...</Template>
+        </RadzenProgressBarCircular>
+    </RadzenStack>
 }
 
 
 @code {
-    [Parameter]
-    public int id { get; set; }
-    public List<Category>? category;
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        var cat_ = await CategoryService.GetCategory(id);
-        category = new List<Category>() { cat_ };
-    }
-    void Cancel() => NavigationManager.NavigateTo("/categories");
+    
 }

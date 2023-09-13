@@ -1,44 +1,10 @@
 ﻿@page "/product/{id:int}"
-@using BookShop.Models;
-@using System.Globalization;
-@using BookShop.Web.Interfaces;
-@inject IProductService ProductService
-@inject NavigationManager NavigationManager
+@page "/product/{id:int}/{path}"
+
 
 
 @if (Products is not null)
 {
-    @*<RadzenDataGrid SelectionMode="DataGridSelectionMode.Single"  Data="@Products" TItem="Product" AllowPaging="true" PageSize="10">
-        <Columns>
-            <RadzenDataGridColumn TItem="Product" Property="Id" Title="Product Id" Sortable="true" Filterable="false" />
-            <RadzenDataGridColumn TItem="Product" Property="Name" Title="Product Name" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Author" Title="Product Author" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Category.Name" Title="Product Category" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Publisher" Title="Product Publisher" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="PublishingYear" Title="Product Publishing Year" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Product Price" Sortable="true">
-                <Template Context="Products">
-                    @string.Format(hr,"{0:C}",Products.Price)
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Product" Property="QuantityInStock" Title="Product Quantity in Stock" Sortable="true" />
-            <RadzenDataGridColumn TItem="Product" Property="Image" Title="Image" Filterable=false>
-                <Template Context="Products">
-                    <RadzenStack AlignItems="AlignItems.Center">
-                        @if (Products.Image is not null)
-                        {
-                            <RadzenImage class="img-thumbnail" style="width:130%;" Path="@Products.Image" />
-                        }else{
-                            <a>No image</a>
-                        }
-                    </RadzenStack>
-                </Template>
-            </RadzenDataGridColumn>
-
-        </Columns>
-    </RadzenDataGrid>
-    <RadzenButton Text="Go back" Click="Cancel"></RadzenButton>*@
-
     <div class="container">
         <div class="row align-items-center m-5">
             @if (product.Image is not null)
@@ -107,28 +73,21 @@
                 </RadzenCard>
             </div>
         </div>
-        <RadzenButton Shade="Shade.Darker" ButtonStyle="ButtonStyle.Primary" Click="@(()=>Cancel())">Go back</RadzenButton>
+        <RadzenButton Text="Go back" Click="Cancel" Icon="arrow_back"></RadzenButton>
     </div>
 
 }
 
 else
 {
-    <p>Loading...</p>
+    <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12">
+        <RadzenProgressBarCircular ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+            <Template>Loading...</Template>
+        </RadzenProgressBarCircular>
+    </RadzenStack>
 }
 
 
 @code {
-    CultureInfo hr = new CultureInfo("fr-FR");
-    [Parameter]
-    public int id { get; set; }
-    public List<Product>? Products;
-    public Product product;
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        product = await ProductService.GetProduct(id);
-        Products = new List<Product>() { product };
-    }
-    void Cancel() => NavigationManager.NavigateTo("/");
+    
 }
