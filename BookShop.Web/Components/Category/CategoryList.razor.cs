@@ -56,11 +56,26 @@ public partial class CategoryList
     {
         if (selected is not null)
         {
+            
             var confirmDelete = await DialogService.Confirm($"Delete item with id {selected[0].Id}?", "Confirm", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
             if (confirmDelete.GetValueOrDefault())
             {
-                await CategoryService.DeleteCategory(selected.First());
-                NavigationManager.NavigateTo("/categories", true);
+                var products = await ProductService.GetProductsByCategory(selected[0].Id);
+                if (products.Count > 0)
+                {
+                    string ids = "";
+                    foreach (var product in products)
+                    {
+                        ids+= product.Id + " ";
+                    }
+                    DialogService.Alert($"Category has products with ids: \n {ids}", "Error!", new AlertOptions() { OkButtonText = "Ok" });
+                }
+                else
+                {
+                    await CategoryService.DeleteCategory(selected.First());
+                    NavigationManager.NavigateTo("/categories", true);
+                }
+                    
             }
         }
         else
