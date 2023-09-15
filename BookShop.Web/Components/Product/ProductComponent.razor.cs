@@ -9,7 +9,7 @@ using Radzen;
 
 namespace BookShop.Web.Components.Product;
 
-public partial class ProductComponent
+public partial class ProductComponent:ComponentBase
 {
     [Inject]
     public IProductService? ProductService { get; set; }

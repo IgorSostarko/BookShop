@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace BookShop.Web.Components.Category;
 
-public partial class CategoryDetails
+public partial class CategoryDetails:ComponentBase
 {
     [Inject]
     public IProductService? ProductService { get; set; }

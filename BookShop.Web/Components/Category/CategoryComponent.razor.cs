@@ -4,7 +4,7 @@ using Radzen;
 
 namespace BookShop.Web.Components.Category;
 
-public partial class CategoryComponent
+public partial class CategoryComponent:ComponentBase
 {
     [Inject]
     public IProductService? ProductService { get; set; }

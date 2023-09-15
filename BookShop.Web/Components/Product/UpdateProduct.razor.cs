@@ -10,7 +10,7 @@ using Radzen;
 
 namespace BookShop.Web.Components.Product;
 
-public partial class UpdateProduct
+public partial class UpdateProduct:ComponentBase
 {
     [Inject]
     public IProductService? ProductService { get; set; }

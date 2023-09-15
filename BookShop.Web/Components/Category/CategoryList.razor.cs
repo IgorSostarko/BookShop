@@ -5,7 +5,7 @@ using Radzen.Blazor;
 
 namespace BookShop.Web.Components.Category;
 
-public partial class CategoryList
+public partial class CategoryList:ComponentBase
 {
     [Inject]
     public IProductService? ProductService { get; set; }

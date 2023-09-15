@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 namespace BookShop.Web.Components.Product;
 
-public partial class AddProductForm
+public partial class AddProductForm:ComponentBase
 {
     [Inject]
     public IProductService? ProductService { get; set; }

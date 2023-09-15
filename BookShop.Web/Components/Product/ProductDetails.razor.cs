@@ -5,7 +5,7 @@ using BookShop.Web.Interfaces;
 
 namespace BookShop.Web.Components.Product;
 
-public partial class ProductDetails
+public partial class ProductDetails:ComponentBase
 {
     [Inject]
     public IProductService? ProductService { get; set; }
