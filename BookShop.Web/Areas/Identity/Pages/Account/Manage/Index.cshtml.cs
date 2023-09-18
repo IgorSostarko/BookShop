@@ -59,6 +59,14 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            [Required]
+            public string Name { get; set; }
+            [Required]
+            public string LastName { get; set; }
+            [Required]
+            public string Address { get; set; }
+            [Required]
+            public string City { get; set; }
         }
 
         private async Task LoadAsync(BookShopWebUser user)
@@ -70,7 +78,12 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Address=user.Address,
+                City = user.City,
+                Name= user.Name,
+                LastName = user.LastName,
+
             };
         }
 
@@ -110,7 +123,11 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
-
+            user.Address = Input.Address;
+            user.City = Input.City;
+            user.Name = Input.Name;
+            user.LastName = Input.LastName;
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
