@@ -1,4 +1,7 @@
-﻿<div class="ps-3 navbar navbar-expand-sm navbar-light bg-secondary bg-opacity-10">
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<div class="ps-3 navbar navbar-expand-sm navbar-light bg-secondary bg-opacity-10">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Book Shop</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -12,23 +15,43 @@
                 <a class="nav-item nav-link" href="/products">Products</a>
             </div>
             <div class="container-fluid"></div>
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" href="#">Login</a>
-            </div>
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" href="#">Register</a>
-            </div>
-            <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="shopping_cart"></RadzenButton>
+            @if (LogedIn.User.Identity.IsAuthenticated)
+            {
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
+                </div>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/account">@LogedIn.User.Identity.Name</a>
+                </div>
+                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="shopping_cart"></RadzenButton>
+            }
+            else
+            {
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/login">Login</a>
+                </div>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/register">Register</a>
+                </div>
+            }
+            
+            
         </div>
     </div>
     
 </div>
 
 @code {
+
+    public AuthenticationState? LogedIn { get; set; }
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
+    protected override async Task OnInitializedAsync()
+    {
+        LogedIn = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await base.OnInitializedAsync();
+    }
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;

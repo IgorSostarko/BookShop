@@ -2,8 +2,17 @@ using BookShop.Web.Interfaces;
 using BookShop.Web.Services;
 using Radzen;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using BookShop.Web.Data;
+using BookShop.Web.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("BookShopConnectionString") ?? throw new InvalidOperationException("Connection string 'BookShopConnectionString' not found.");
+
+builder.Services.AddDbContext<BookShopWebContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<BookShopWebUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<BookShopWebContext>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -42,8 +51,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-app.UseRouting();
 
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
