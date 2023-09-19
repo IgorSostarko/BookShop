@@ -1,7 +1,23 @@
 ﻿<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
+                <NotAuthorized>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-2">
+
+                            </div>
+                            <div class="col-8 d-flex justify-content-center">
+                                <p class="h1">Log in to see this content.</p>
+                            </div>
+                            <div class="col-2">
+
+                            </div>
+                        </div>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>

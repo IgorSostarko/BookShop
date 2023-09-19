@@ -30,13 +30,15 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<BookShopWebUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
             UserManager<BookShopWebUser> userManager,
             IUserStore<BookShopWebUser> userStore,
             SignInManager<BookShopWebUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +46,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -109,11 +112,19 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
             [Required]
             public string UserName { get; set; }
             public string PhoneNumber { get; set; }
+            [Required]
+            public string Role { get; set; }
         }
 
-
+        public static List<IdentityRole> Roles { get; set; }
         public async Task OnGetAsync(string returnUrl = null)
         {
+            if (! await _roleManager.RoleExistsAsync("Customer"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Customer"));
+                await _roleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+            Roles = _roleManager.Roles.ToList();
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -134,7 +145,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
                 user.LastName= Input.LastName;
                 user.PhoneNumber= Input.PhoneNumber;
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
+                await _userManager.AddToRoleAsync(user, Input.Role);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

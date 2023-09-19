@@ -8,12 +8,17 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="@NavMenuCssClass navbar-collapse" @onclick="ToggleNavMenu">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" href="/categories">Categories</a>
-            </div>
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" href="/products">Products</a>
-            </div>
+            <CascadingAuthenticationState>
+                <AuthorizeView Roles="Admin">
+                    <div class="navbar-nav">
+                        <a class="nav-item nav-link" href="/categories">Categories</a>
+                    </div>
+                    <div class="navbar-nav">
+                        <a class="nav-item nav-link" href="/products">Products</a>
+                    </div>
+                </AuthorizeView>
+            </CascadingAuthenticationState>
+            
             <div class="container-fluid"></div>
             @if (LogedIn.User.Identity.IsAuthenticated)
             {
@@ -42,7 +47,6 @@
 </div>
 
 @code {
-
     public AuthenticationState? LogedIn { get; set; }
     private bool collapseNavMenu = true;
 

@@ -12,7 +12,7 @@ var connectionString = builder.Configuration.GetConnectionString("BookShopConnec
 
 builder.Services.AddDbContext<BookShopWebContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<BookShopWebUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<BookShopWebContext>();
+builder.Services.AddDefaultIdentity<BookShopWebUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>().AddEntityFrameworkStores<BookShopWebContext>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
