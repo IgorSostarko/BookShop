@@ -1,5 +1,5 @@
 ﻿@page "/categories"
-@attribute [Authorize(Roles = "Admin")]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
     <div class="container">
@@ -12,9 +12,12 @@
 {
     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="1rem" Wrap="FlexWrap.Wrap">
         <RadzenButton Click="Details" Text="Details" Icon="info_outline"/>
-        <RadzenButton Click="AddCategory" Text="Add category" Icon="note_add" />
-        <RadzenButton Click="UpdateCategory" Text="Edit category" Icon="edit" />
-        <RadzenButton Click="DeleteCategory" Text="Delete category" Icon="delete_forever"/>
+        <AuthorizeView Roles="Admin">
+            <RadzenButton Click="AddCategory" Text="Add category" Icon="note_add" />
+            <RadzenButton Click="UpdateCategory" Text="Edit category" Icon="edit" />
+            <RadzenButton Click="DeleteCategory" Text="Delete category" Icon="delete_forever" />
+        </AuthorizeView>
+        
     </RadzenStack>
     <br />
     <RadzenDataGrid @ref="grid" SelectionMode="DataGridSelectionMode.Single" AllowGrouping="true" AllowSorting="true" Data="@Categories" TItem="Models.Category" AllowPaging="true" PageSize="10" AllowFiltering="true" FilterMode="FilterMode.Simple" LogicalFilterOperator="LogicalFilterOperator.Or" @bind-Value=@selected>

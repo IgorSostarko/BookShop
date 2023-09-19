@@ -6,9 +6,13 @@
     <header>
         <NavMenu/>
     </header>
-    <div class="content p-3">
-        @Body
-    </div>
+    @if (Body is not null)
+    {
+        <div class="content p-3">
+            @Body
+        </div>
+    }
+    
 </div>
 
 <RadzenContextMenu />
