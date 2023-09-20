@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using BookShop.Web.Interfaces;
 
 namespace BookShop.Web.Areas.Identity.Pages.Account
 {
@@ -22,11 +23,13 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<BookShopWebUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ICartService _cartService;
 
-        public LoginModel(SignInManager<BookShopWebUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<BookShopWebUser> signInManager, ILogger<LoginModel> logger, ICartService cartService)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _cartService = cartService;
         }
 
         /// <summary>
@@ -115,6 +118,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    await _cartService.SetUpName(Input.UserName);
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

@@ -21,5 +21,6 @@ public class Product
     public int QuantityInStock { get; set; }
 
     public string? Image { get; set; }
+    //public IList<CartProductConnection> CartProductConnections { get; set; }
 
 }

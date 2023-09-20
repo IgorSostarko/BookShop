@@ -1,7 +1,9 @@
-﻿using BookShop.Web.Areas.Identity.Data;
+﻿using BookShop.Models;
+using BookShop.Web.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace BookShop.Web.Data;
 
@@ -11,7 +13,6 @@ public class BookShopWebContext : IdentityDbContext<BookShopWebUser>
         : base(options)
     {
     }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

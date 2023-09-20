@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using BookShop.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace BookShop.Web.Areas.Identity.Data;
@@ -18,6 +19,8 @@ public class BookShopWebUser : IdentityUser
     public string? Address { get; set; } = "";
     [Required]
     public string? City { get; set; }
+    public string? CartId { get; set; }
+    public Cart? Cart { get; set; }
 
 }
 

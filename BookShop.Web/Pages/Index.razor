@@ -3,10 +3,13 @@
 @using BookShop.Models;
 @using BookShop.Web.Interfaces;
 @using System.Globalization;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Newtonsoft.Json;
 @inject IProductService ProductService
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
 @inject DialogService DialogService
+@inject ProtectedLocalStorage ProtectedLocalStorage
 
 <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
     <div class="container">
@@ -47,8 +50,8 @@
                         </RadzenRow>
                     </RadzenCard>
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0">
-                        <RadzenButton Variant="Variant.Text" class="rz-text-secondary-color" Text="Info" Click="@(args=>GetDetails(product.Id))"/>
-                        <RadzenButton Variant="Variant.Text" Text="Add to cart" Click="@(args=>AddToCart(product.Id))"/>
+                        <RadzenButton Variant="Variant.Text" class="rz-text-secondary-color" Text="Info" Click="@(args=>GetDetails(product.Id))" />
+                        <RadzenButton Variant="Variant.Text" Text="Add to cart" Click="@(args=>AddToCart(product.Id))" />
                     </RadzenStack>
                 </RadzenCard>
             </Template>
@@ -83,11 +86,17 @@ else
         var user = await LogedIn;
         if (!user.User.Identity.IsAuthenticated)
         {
-            var login=await DialogService.Alert($"You have to be loged in to add to cart!", "Not loged in!", new AlertOptions() { OkButtonText = "Log in" });
-            if (login??false)
+            var login = await DialogService.Alert($"You have to be loged in to add to cart!", "Not loged in!", new AlertOptions() { OkButtonText = "Log in" });
+            if (login ?? false)
             {
                 NavigationManager.NavigateTo("/login", true);
             }
         }
+        else
+        {
+
+
+        }
     }
+}
 }

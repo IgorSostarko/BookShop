@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using BookShop.Web.Interfaces;
 
 namespace BookShop.Web.Areas.Identity.Pages.Account
 {
@@ -31,6 +32,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ICartService _cartService;
 
         public RegisterModel(
             UserManager<BookShopWebUser> userManager,
@@ -38,7 +40,8 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
             SignInManager<BookShopWebUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ICartService cartService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,6 +50,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _cartService = cartService;
         }
 
         /// <summary>
@@ -136,7 +140,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
+                
                 await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 user.Address= Input.Address;
@@ -144,10 +148,14 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
                 user.Name= Input.Name;
                 user.LastName= Input.LastName;
                 user.PhoneNumber= Input.PhoneNumber;
+                user.CartId = Input.UserName;
+                await _cartService.SetUpName(user.UserName);
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                
                 await _userManager.AddToRoleAsync(user, Input.Role);
                 if (result.Succeeded)
                 {
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
