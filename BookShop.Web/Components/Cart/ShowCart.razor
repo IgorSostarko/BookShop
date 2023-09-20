@@ -1,0 +1,47 @@
+﻿@page "/cart"
+@using BookShop.Models;
+@using BookShop.Web.Interfaces;
+@using BookShop.Web.Services;
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Radzen;
+@using System.Globalization;
+@attribute [Authorize(Roles = "Admin, Customer")]
+@inject ICartService CartService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Cart</h1>
+        <p class="lead">This is your cart.</p>
+    </div>
+</div>
+@if (cartProducts is not null)
+{
+    <div class="container">
+        @foreach(var item in cartProducts)
+        {
+            <div style="border:solid black 2px">
+                <div class="row">
+                    <p>Product: @item.Product.Name</p>
+                </div>
+                <div class="row">
+                    <p>Quantity: @item.Quantity</p>
+                </div>
+                <div class="row">
+                    <p>Price: @item.Price</p>
+                </div>
+
+            </div>
+        }
+    </div>
+}
+
+@code {
+    public List<CartProductConnection>? cartProducts=null;
+    protected async override Task OnInitializedAsync()
+    {
+        cartProducts = await CartService.GetUserCart((await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.Identity.Name);
+        await base.OnInitializedAsync();
+    }
+}

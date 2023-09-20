@@ -43,5 +43,11 @@ namespace BookShop.Api.Services
                 return cartItem;
             }
         }
+
+        public Task<List<CartProductConnection>> GetItemsOfCart(string user)
+        {
+            var items= _appDbContext.CartProducts.Where(a=>a.CartId==user).Include(a=>a.Product).ThenInclude(a=>a.Category).ToList();
+            return Task.FromResult(items);
+        }
     }
 }

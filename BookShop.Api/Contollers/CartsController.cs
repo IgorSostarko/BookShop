@@ -27,5 +27,11 @@ namespace BookShop.Api.Contollers
             var conn = await _cartRepositoryService.AddToCart(connection);
             return CreatedAtAction(nameof(PostCart), new { conn.CartId, conn.ProductId }, conn);
         }
+        [HttpPost("get")]
+        public async Task<List<CartProductConnection>> GetCart([FromBody] string user)
+        {
+            var items = await _cartRepositoryService.GetItemsOfCart(user);
+            return items;
+        }
     }
 }

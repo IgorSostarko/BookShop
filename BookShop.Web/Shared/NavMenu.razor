@@ -1,4 +1,5 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 
 
 <div class="ps-3 navbar navbar-expand-sm navbar-light bg-secondary bg-opacity-10">
@@ -28,7 +29,7 @@
                 <div class="navbar-nav">
                     <a class="nav-item nav-link" style="white-space:nowrap;" href="/account">Welcome <b>@LogedIn.User.Identity.Name</b>!</a>
                 </div>
-                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="shopping_cart"></RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="GoToCart" Icon="shopping_cart"></RadzenButton>
             }
             else
             {
@@ -59,5 +60,9 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    private void GoToCart()
+    {
+        NavigationManager.NavigateTo("/cart", true);
     }
 }

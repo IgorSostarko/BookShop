@@ -6,6 +6,7 @@ namespace BookShop.Web.Interfaces
     {
         Task<bool> SetUpName(string name);
         Task<bool> AddToCart(CartProductConnection connection);
+        Task<List<CartProductConnection>> GetUserCart(string name);
 
     }
 }
