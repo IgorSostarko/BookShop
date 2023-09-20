@@ -29,7 +29,7 @@ namespace BookShop.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cart");
+                    b.ToTable("Cart", (string)null);
                 });
 
             modelBuilder.Entity("BookShop.Models.CartProductConnection", b =>
@@ -59,7 +59,7 @@ namespace BookShop.Web.Migrations
 
                     b.HasIndex("ProductId1");
 
-                    b.ToTable("CartProductConnection");
+                    b.ToTable("CartProductConnection", (string)null);
                 });
 
             modelBuilder.Entity("BookShop.Models.Category", b =>
@@ -79,7 +79,7 @@ namespace BookShop.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("BookShop.Models.Product", b =>
@@ -121,7 +121,7 @@ namespace BookShop.Web.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Product", (string)null);
                 });
 
             modelBuilder.Entity("BookShop.Web.Areas.Identity.Data.BookShopWebUser", b =>

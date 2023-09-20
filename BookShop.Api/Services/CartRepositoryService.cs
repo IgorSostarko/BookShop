@@ -1,6 +1,7 @@
 ﻿using BookShop.Api.Data;
 using BookShop.Api.Interfaces;
 using BookShop.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShop.Api.Services
@@ -23,6 +24,23 @@ namespace BookShop.Api.Services
             else
             {
                 return true;
+            }
+        }
+        public async Task<CartProductConnection> AddToCart(CartProductConnection connection)
+        {
+            var cartItem= await _appDbContext.CartProducts.Where(a=> a.CartId==connection.CartId && a.ProductId==connection.ProductId).FirstOrDefaultAsync();
+            if (cartItem == null)
+            {
+                await _appDbContext.CartProducts.AddAsync(connection);
+                await _appDbContext.SaveChangesAsync();
+                return connection;
+            }
+            else
+            {
+                cartItem.Quantity+=connection.Quantity;
+                _appDbContext.CartProducts.Update(cartItem);
+                await _appDbContext.SaveChangesAsync();
+                return cartItem;
             }
         }
     }

@@ -1,4 +1,8 @@
-﻿using BookShop.Web.Interfaces;
+﻿using BookShop.Models;
+using BookShop.Web.Interfaces;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace BookShop.Web.Services
 {
@@ -10,6 +14,13 @@ namespace BookShop.Web.Services
         {
             _httpClient = httpClient;
         }
+
+        public async Task<bool> AddToCart(CartProductConnection connection)
+        {
+            var check = await _httpClient.PostAsJsonAsync($"api/carts", connection);
+            return check.IsSuccessStatusCode;
+        }
+
         public async Task<bool> SetUpName(string name)
         {
             var check = await _httpClient.GetFromJsonAsync<bool>($"api/carts/create/{name}");

@@ -10,6 +10,7 @@
 @inject NotificationService NotificationService
 @inject DialogService DialogService
 @inject ProtectedLocalStorage ProtectedLocalStorage
+@inject ICartService CartService
 
 <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
     <div class="container">
@@ -51,7 +52,7 @@
                     </RadzenCard>
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0">
                         <RadzenButton Variant="Variant.Text" class="rz-text-secondary-color" Text="Info" Click="@(args=>GetDetails(product.Id))" />
-                        <RadzenButton Variant="Variant.Text" Text="Add to cart" Click="@(args=>AddToCart(product.Id))" />
+                        <RadzenButton Variant="Variant.Text" Text="Add to cart" Click="@(args=>AddToCart(product.Id, product.Price))" />
                     </RadzenStack>
                 </RadzenCard>
             </Template>
@@ -81,7 +82,7 @@ else
     {
         NavigationManager.NavigateTo($"/product/{id}");
     }
-    public async void AddToCart(int id)
+    public async void AddToCart(int id, decimal price, int quantity=1)
     {
         var user = await LogedIn;
         if (!user.User.Identity.IsAuthenticated)
@@ -94,8 +95,11 @@ else
         }
         else
         {
-
-
+            var added = await CartService.AddToCart(new CartProductConnection() { Price=price, CartId=user.User.Identity.Name, ProductId=id, Quantity=quantity});
+            if (added)
+            {
+                NotificationService.Notify(NotificationSeverity.Success, "Success", "Succesfuly added to cart!");
+            }
         }
     }
 }

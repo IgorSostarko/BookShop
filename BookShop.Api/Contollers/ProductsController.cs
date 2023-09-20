@@ -52,7 +52,7 @@ public class ProductsController : ControllerBase
         return CreatedAtAction(nameof(GetProductById), new { createdProduct.Id }, createdProduct);
     }
     [HttpPut("{id}")]
-    public async Task<ActionResult<Product>> UpdateCategory(int id, [FromBody] Product product)
+    public async Task<ActionResult<Product>> UpdateProduct(int id, [FromBody] Product product)
     {
         var productToUpdate = await _productRepositoryService.GetProductByIdAsync(product.Id);
         if (productToUpdate == null)

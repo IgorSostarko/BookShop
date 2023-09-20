@@ -74,7 +74,7 @@
                         </RadzenCard>
                         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0">
                             <RadzenButton Variant="Variant.Text" class="rz-text-secondary-color" Text="Info" Click="@(args=>GetDetails(product.Id))" />
-                            <RadzenButton Variant="Variant.Text" Text="Add to cart" Click="@(args=>AddToCart(product.Id))" />
+                            <RadzenButton Variant="Variant.Text" Text="Add to cart" Click="@(args=>AddToCart(product.Id, product.Price))" />
                         </RadzenStack>
                     </RadzenCard>
                 </Template>
