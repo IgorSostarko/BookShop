@@ -37,10 +37,20 @@ namespace BookShop.Api.Services
             }
             else
             {
-                cartItem.Quantity+=connection.Quantity;
-                _appDbContext.CartProducts.Update(cartItem);
-                await _appDbContext.SaveChangesAsync();
-                return cartItem;
+                if (connection.Quantity*-1 >= cartItem.Quantity)
+                {
+                    _appDbContext.CartProducts.Remove(cartItem);
+                    await _appDbContext.SaveChangesAsync();
+                    return cartItem;
+                }
+                else
+                {
+                    cartItem.Quantity += connection.Quantity;
+                    _appDbContext.CartProducts.Update(cartItem);
+                    await _appDbContext.SaveChangesAsync();
+                    return cartItem;
+                }
+                
             }
         }
 
