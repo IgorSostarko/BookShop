@@ -1,0 +1,35 @@
+﻿@page "/users"
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Components.Web;
+@attribute [Authorize(Roles = "Admin")]
+@model BookShop.Web.Areas.Identity.Pages.UsersModel
+
+<div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
+    <div class="container">
+        <h1 class="display-4">Profiles</h1>
+        <p class="lead">Manage profiles</p>
+    </div>
+</div>
+
+<form method="post">
+    <input asp-for="@Model.Filter" />
+    <button id="login-submit" type="submit" class="btn btn-lg btn-primary">Filter</button>
+</form>
+
+@if (Model.Users is not null)
+{
+    <div class="container-fluid">
+        @foreach (var user in Model.Users)
+        {
+            <div>@user.UserName</div>
+            <a class="btn btn-secondary" href=@($"/cart/{user.UserName}")>Open cart</a>
+            <a class="btn btn-secondary" >Open profile</a>
+        }
+    </div>
+}
+
+
+@{
+
+}

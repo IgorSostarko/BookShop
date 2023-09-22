@@ -1,4 +1,5 @@
 ﻿@page "/cart"
+@page "/cart/{name}"
 @using BookShop.Models;
 @using BookShop.Web.Interfaces;
 @using BookShop.Web.Services;
@@ -20,7 +21,7 @@
 <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
     <div class="container">
         <h1 class="display-4">Cart</h1>
-        <p class="lead">This is your cart.</p>
+        <p class="lead">This is cart of user @name.</p>
     </div>
 </div>
 @if (cartProducts is not null)
@@ -74,7 +75,9 @@
                 
             </Template>
         </RadzenDataList>
-        <RadzenCard Variant="Variant.Text" Style="width:100%; padding:0">
+    @if (name == logedUserName)
+    {
+        <RadzenCard Variant="Variant.Text" Style="width:100%; padding:1rem">
             <RadzenRow>
                 <RadzenColumn Size="12">
                     <div style="width:fit-content; margin-left:auto;">
@@ -85,27 +88,40 @@
             </RadzenRow>
             
         </RadzenCard>
+        }
 }
 
 @code {
     public List<CartProductConnection>? cartProducts = null;
     public AuthenticationState? state;
+    [Parameter]
+    public string? name { get; set; }
+    public string logedUserName;
     protected async override Task OnInitializedAsync()
     {
+        logedUserName = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.Identity.Name;
         state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        cartProducts = await CartService.GetUserCart((await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.Identity.Name);
+        if (state.User.IsInRole("Admin"))
+        {
+            name ??= logedUserName;
+        }
+        else
+        {
+            name = logedUserName;
+        }
+        cartProducts = await CartService.GetUserCart(name);
         await base.OnInitializedAsync();
     }
     public async Task ChangeQuantity(CartProductConnection connection, int quantity)
     {
         if (quantity > 0)
         {
-            var added = await CartService.AddToCart(new CartProductConnection() { Price = connection.Price, CartId = state.User.Identity.Name, ProductId = connection.ProductId, Quantity = quantity - connection.Quantity });
+            var added = await CartService.AddToCart(new CartProductConnection() { Price = connection.Price, CartId = name, ProductId = connection.ProductId, Quantity = quantity - connection.Quantity });
             connection.Quantity = quantity;
         }
         else if (quantity==0)
         {
-            var added = await CartService.AddToCart(new CartProductConnection() { Price = connection.Price, CartId = state.User.Identity.Name, ProductId = connection.ProductId, Quantity = quantity - connection.Quantity });
+            var added = await CartService.AddToCart(new CartProductConnection() { Price = connection.Price, CartId = name, ProductId = connection.ProductId, Quantity = quantity - connection.Quantity });
             cartProducts.Remove(connection);
         }
     }
