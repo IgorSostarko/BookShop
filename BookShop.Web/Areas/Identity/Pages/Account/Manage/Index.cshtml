@@ -1,4 +1,4 @@
-﻿@page "/account"
+﻿@page "/account/{userName?}"
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
@@ -39,6 +39,12 @@
                 <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
                 <label asp-for="Input.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating-mb-3">
+                <label asp-for=Input.Role>Select role</label>
+                <select asp-for="Input.Role" asp-items="@(new SelectList(Model.Roles))" class="form-select">
+                </select>
+                <span asp-validation-for="Input.Role" class="text-danger"></span>
             </div>
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>

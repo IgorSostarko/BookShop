@@ -65,9 +65,9 @@
                         </RadzenColumn>
                         <RadzenColumn Size="12" SizeMD="2" Class="rz-p-4">
                             <RadzenRow Gap="1" Style="margin:auto; width:fit-content;">
-                                <RadzenButton Text="" Icon="add" class="m-1" Click="@(()=>ChangeQuantity(item, item.Quantity+1))" />
-                                <div style="margin-top:auto; margin-bottom:auto; font-size:1rem; font-weight:bold; color:darkred;">@item.Quantity</div>
                                 <RadzenButton Text="" Icon="remove" class="m-1" Click="@(()=>ChangeQuantity(item, item.Quantity-1))" />
+                                <div style="margin-top:auto; margin-bottom:auto; font-size:1rem; font-weight:bold; color:darkred;">@item.Quantity</div>
+                                <RadzenButton Text="" Icon="add" class="m-1" Click="@(()=>ChangeQuantity(item, item.Quantity+1))" />
                             </RadzenRow>
                         </RadzenColumn>
                     </RadzenRow>

@@ -116,8 +116,8 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
             [Required]
             public string UserName { get; set; }
             public string PhoneNumber { get; set; }
-            [Required]
-            public string Role { get; set; }
+            //[Required]
+            //public string Role { get; set; }
         }
 
         public static List<IdentityRole> Roles { get; set; }
@@ -152,7 +152,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account
                 await _cartService.SetUpName(user.UserName);
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 
-                await _userManager.AddToRoleAsync(user, Input.Role);
+                await _userManager.AddToRoleAsync(user, "Customer");
                 if (result.Succeeded)
                 {
 

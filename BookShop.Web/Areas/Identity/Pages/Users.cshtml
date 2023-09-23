@@ -28,7 +28,7 @@
                         <div class="card-title" style="font-size:large; font-weight:bold; color:darkred;">@user.UserName</div>
                         <div class="card-text"><b>Name:</b> @user.Name @user.LastName</div>
                         <a class="btn btn-secondary" href=@($"/cart/{user.UserName}")>Open cart</a>
-                        <a class="btn btn-secondary">Open profile</a>
+                        <a class="btn btn-secondary" href=@($"/account/{user.UserName}")>Open profile</a>
                     </div>
 
                 </div>
