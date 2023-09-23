@@ -12,9 +12,9 @@ public class ProductService:IProductService
         _httpClient = httpClient;
     }
 
-    public async Task<List<Product>?> GetProducts()
+    public async Task<List<Product>?> GetProducts(string query="")
     {
-        var products = await _httpClient.GetFromJsonAsync<List<Product>>("api/products");
+        var products = await _httpClient.GetFromJsonAsync<List<Product>>($"api/products{query}");
         return products;
     }
 

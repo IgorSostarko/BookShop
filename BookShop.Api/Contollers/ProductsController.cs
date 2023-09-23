@@ -17,19 +17,34 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] int? categoryId)
+    public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] int? categoryId, [FromQuery] decimal? startPrice, [FromQuery] decimal? endPrice, [FromQuery] string? author, [FromQuery] string? name)
     {
+        List<Product> products;
         if (categoryId is null)
         {
-            var products = await _productRepositoryService.GetProductsAsync();
-            return Ok(products);
+            products = (List<Product>)await _productRepositoryService.GetProductsAsync();
         }
         else
         {
-            var products=await _productRepositoryService.GetProductsOfCategoryAsync(categoryId??1);
-            return Ok(products);
+            products= (List<Product>)await _productRepositoryService.GetProductsOfCategoryAsync(categoryId??1);
         }
-        
+        if (startPrice is not null) { 
+            products=products.Where(a=>a.Price>=startPrice).ToList();
+        }
+        if (endPrice is not null)
+        {
+            products=products.Where(a=>a.Price<=endPrice).ToList();
+        }
+        if (name is not null)
+        {
+            products=products.Where(a=>a.Name.Contains(name)).ToList();
+        }
+        if (author is not null)
+        {
+            products = products.Where(a => a.Author.Contains(author)).ToList();
+        }
+        return Ok(products);
+
     }
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProductById(int id)

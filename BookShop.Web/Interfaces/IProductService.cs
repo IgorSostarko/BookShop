@@ -4,7 +4,7 @@ namespace BookShop.Web.Interfaces
 {
     public interface IProductService
     {
-        Task<List<Product>?> GetProducts();
+        Task<List<Product>?> GetProducts(string query="");
         Task<List<Product>?> GetProductsByCategory(int categoryId);
         Task<Product?> GetProduct(int id);
         Task<bool> AddProduct(Product product);

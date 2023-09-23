@@ -11,6 +11,7 @@
 @inject DialogService DialogService
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject ICartService CartService
+@inject ICategoryService CategoryService
 
 <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
     <div class="container">
@@ -18,47 +19,72 @@
         <p class="lead">This is our selection of books.</p>
     </div>
 </div>
+
 @if (products is not null)
 {
-    <RadzenCard class="rz-mt-12" Variant="Variant.Text">
-        <RadzenDataList PageSize="4" WrapItems="true" Data="@products" TItem="Product">
-            <Template Context="product">
-                <RadzenCard Class="rz-my-12 rz-mx-3" Style="max-width: 320px; margin-top:0!important">
-                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-p-4">
-                        @if (product.Image is not null)
-                        {
-                            <div style="width:100px; height:100px; display:flex; align-items:center; align-content:center;">
-                                <RadzenImage Path="@product.Image" Style="max-width:100px; max-height:100px; aspect-ratio:auto;" />
-                            </div>
-                        }
-                        <RadzenStack Gap="0" Style="height:100px;">
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Title</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Body1"><b>@product.Name</b></RadzenText>
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Author</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Body1"><b>@product.Author</b></RadzenText>
-                        </RadzenStack>
-                    </RadzenStack>
-                    <RadzenCard class="rz-background-color-primary-light rz-shadow-0 rz-border-radius-0 rz-p-8" style="margin: 1rem calc(-1 * var(--rz-card-padding));">
-                        <RadzenRow RowGap="0">
-                            <RadzenColumn SizeSM="6">
-                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Category</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@product.Category.Name</b></RadzenText>
-                            </RadzenColumn>
-                            <RadzenColumn SizeSM="6">
-                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Price</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b> @string.Format(hr,"{0:C}",product.Price)</b></RadzenText>
-                            </RadzenColumn>
-                        </RadzenRow>
-                    </RadzenCard>
-                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0">
-                        <RadzenButton Variant="Variant.Text" class="rz-text-secondary-color" Text="Info" Click="@(args=>GetDetails(product.Id))" />
-                        <RadzenButton Variant="Variant.Text" Text="Add to cart" Click="@(args=>AddToCart(product.Id, product.Price))" />
-                    </RadzenStack>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-12">
+                <p>Filter</p>
+                <RadzenTemplateForm TItem="FilterItem" Data=@Filter Submit=@Submit class="p-3">
+                    Category:
+                    <RadzenDropDown Name="CategoryId" @bind-Value=@Filter.CategoryId Data=@Categories TextProperty="Name" ValueProperty="Id" Style="width: 100%; max-width: 400px;" />
+                    <br>
+                    Book title:
+                    <RadzenTextBox style="display: block" Name="Name" @bind-Value=@Filter.Name class="w-100" />
+                    Author:
+                    <RadzenTextBox style="display: block" Name="Author" @bind-Value=@Filter.Author class="w-100" />
+                    Start price:
+                    <RadzenNumeric style="display: block" Name="StartPrice" @bind-Value=@Filter.StartPrice class="w-100" />
+                    End price:
+                    <RadzenNumeric style="display: block" Name="EndPrice" @bind-Value=@Filter.EndPrice class="w-100" />
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" Icon="search"></RadzenButton>
+                </RadzenTemplateForm>
+            </div>
+            <div class="col-lg-9 col-12">
+                <RadzenCard class="rz-mt-12" Variant="Variant.Text">
+                    <RadzenDataList PageSize="4" WrapItems="true" Data="@products" TItem="Product">
+                        <Template Context="product">
+                            <RadzenCard Class="rz-my-12 rz-mx-3" Style="max-width: 320px; margin-top:0!important">
+                                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-p-4">
+                                    @if (product.Image is not null)
+                                    {
+                                        <div style="width:100px; height:100px; display:flex; align-items:center; align-content:center;">
+                                            <RadzenImage Path="@product.Image" Style="max-width:100px; max-height:100px; aspect-ratio:auto;" />
+                                        </div>
+                                    }
+                                    <RadzenStack Gap="0" Style="height:100px;">
+                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Title</RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Body1"><b>@product.Name</b></RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Author</RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Body1"><b>@product.Author</b></RadzenText>
+                                    </RadzenStack>
+                                </RadzenStack>
+                                <RadzenCard class="rz-background-color-primary-light rz-shadow-0 rz-border-radius-0 rz-p-8" style="margin: 1rem calc(-1 * var(--rz-card-padding));">
+                                    <RadzenRow RowGap="0">
+                                        <RadzenColumn SizeSM="6">
+                                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Category</RadzenText>
+                                            <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@product.Category.Name</b></RadzenText>
+                                        </RadzenColumn>
+                                        <RadzenColumn SizeSM="6">
+                                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Price</RadzenText>
+                                            <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b> @string.Format(hr,"{0:C}",product.Price)</b></RadzenText>
+                                        </RadzenColumn>
+                                    </RadzenRow>
+                                </RadzenCard>
+                                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0">
+                                    <RadzenButton Variant="Variant.Text" class="rz-text-secondary-color" Text="Info" Click="@(args=>GetDetails(product.Id))" />
+                                    <RadzenButton Variant="Variant.Text" Text="Add to cart" Click="@(args=>AddToCart(product.Id, product.Price))" />
+                                </RadzenStack>
+                            </RadzenCard>
+                        </Template>
+                    </RadzenDataList>
                 </RadzenCard>
-            </Template>
-        </RadzenDataList>
-    </RadzenCard>
+            </div>
+        </div>
+    </div>
 }
+
 else
 {
     <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12">
@@ -73,16 +99,23 @@ else
     public Task<AuthenticationState>? LogedIn { get; set; }
     CultureInfo hr = new CultureInfo("fr-FR");
     public List<Product>? products;
+    public List<Product>? Products;
+    public FilterItem? Filter { get; set; }
+    public List<Category>? Categories { get; set; }
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         products = await ProductService.GetProducts();
+        Products = new List<Product>(products);
+        Categories = await CategoryService.GetCategories();
+        Categories.Add(new Category() { Id = 0, Name = "All categories", DisplayOrder = 0 });
+        Filter = new FilterItem();
     }
     public void GetDetails(int id)
     {
         NavigationManager.NavigateTo($"/product/{id}");
     }
-    public async void AddToCart(int id, decimal price, int quantity=1)
+    public async void AddToCart(int id, decimal price, int quantity = 1)
     {
         var user = await LogedIn;
         if (!user.User.Identity.IsAuthenticated)
@@ -95,11 +128,71 @@ else
         }
         else
         {
-            var added = await CartService.AddToCart(new CartProductConnection() { Price=price, CartId=user.User.Identity.Name, ProductId=id, Quantity=quantity});
+            var added = await CartService.AddToCart(new CartProductConnection() { Price = price, CartId = user.User.Identity.Name, ProductId = id, Quantity = quantity });
             if (added)
             {
                 NotificationService.Notify(NotificationSeverity.Success, "Success", "Succesfuly added to cart!");
             }
         }
+
+    }
+    public async void Submit()
+    {
+        //string query="?";
+        //if (Filter.Author is not null && Filter.Author != "")
+        //{
+        //    query+=$"author={Filter.Author}&";
+        //}
+        //if (Filter.Name is not null && Filter.Name != "")
+        //{
+        //    query += $"name={Filter.Name}&";
+        //}
+        //if (Filter.StartPrice is not null)
+        //{
+        //    query += $"startPrice={Filter.StartPrice}&";
+        //}
+        //if (Filter.EndPrice is not null)
+        //{
+        //    query += $"startPrice={Filter.EndPrice}&";
+        //}
+        //if (Filter.CategoryId is not null)
+        //{
+        //    query += $"startPrice={Filter.CategoryId}&";
+        //}
+        //if (query.Length > 1)
+        //{
+        //    query = query.Remove(query.Length - 1);
+        //    products = await ProductService.GetProducts(query);
+        //}
+        products = new List<Product>(Products);
+        if (Filter.Author is not null && Filter.Author != "")
+        {
+            products = products.Where(a => a.Author.Contains(Filter.Author)).ToList();
+        }
+        if (Filter.Name is not null && Filter.Name != "")
+        {
+            products = products.Where(a => a.Name.Contains(Filter.Name)).ToList();
+        }
+        if (Filter.StartPrice is not null)
+        {
+            products = products.Where(a => a.Price>=Filter.StartPrice).ToList();
+        }
+        if (Filter.EndPrice is not null)
+        {
+            products = products.Where(a => a.Price <= Filter.EndPrice).ToList();
+        }
+        if (Filter.CategoryId is not null && Filter.CategoryId!=0)
+        {
+            products = products.Where(a => a.CategoryId == Filter.CategoryId).ToList();
+        }
+
+    }
+    public class FilterItem
+    {
+        public string? Author { get; set; }
+        public decimal? StartPrice { get; set; }
+        public decimal? EndPrice { get; set; }
+        public int? CategoryId { get; set; }
+        public string? Name { get; set; }
     }
 }

@@ -12,19 +12,28 @@
     </div>
 </div>
 
-<form method="post">
-    <input asp-for="@Model.Filter" />
-    <button id="login-submit" type="submit" class="btn btn-lg btn-primary">Filter</button>
+<form method="post" style="margin-bottom:2rem;">
+    <label asp-for="@Model.Filter"><p class="lead">Search users by user name: </p></label>
+    <input asp-for="@Model.Filter" class="rz-textbox"/>
+    <button id="login-submit" type="submit" class="btn btn-primary" style="background-color:#6966db; height:2.5rem;">Filter</button>
 </form>
 
 @if (Model.Users is not null)
 {
-    <div class="container-fluid">
+    <div class="container-fluid p-0" style="display:flex; flex-wrap:wrap; text-align:center;">
         @foreach (var user in Model.Users)
         {
-            <div>@user.UserName</div>
-            <a class="btn btn-secondary" href=@($"/cart/{user.UserName}")>Open cart</a>
-            <a class="btn btn-secondary" >Open profile</a>
+                <div class="card" style="width:fit-content; margin-left:auto; margin-right:auto; margin-bottom:2rem; text-align:center; border:0; display:block;">
+                    <div class="card-body">
+                        <div class="card-title" style="font-size:large; font-weight:bold; color:darkred;">@user.UserName</div>
+                        <div class="card-text"><b>Name:</b> @user.Name @user.LastName</div>
+                        <a class="btn btn-secondary" href=@($"/cart/{user.UserName}")>Open cart</a>
+                        <a class="btn btn-secondary">Open profile</a>
+                    </div>
+
+                </div>
+            
+            
         }
     </div>
 }
