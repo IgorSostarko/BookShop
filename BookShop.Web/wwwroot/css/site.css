@@ -16,12 +16,14 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
+    background-color: #6966db;
     border-color: #1861ac;
 }
+    .btn-primary:hover {
+        background-color: #6966db;
+    }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -76,3 +78,10 @@ a, .btn-link {
     .rz-cell-data{
         white-space:normal !important;
     }
+.manage-nav-item {
+    color: #6966db;
+}
+.active {
+    background-color: #6966db!important;
+    color:white;
+}

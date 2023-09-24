@@ -18,15 +18,18 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<BookShopWebUser> _userManager;
         private readonly SignInManager<BookShopWebUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public ChangePasswordModel(
             UserManager<BookShopWebUser> userManager,
             SignInManager<BookShopWebUser> signInManager,
-            ILogger<ChangePasswordModel> logger)
+            ILogger<ChangePasswordModel> logger,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -80,11 +83,12 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            await SetUserAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+            ViewData["User"] = user.UserName;
 
             var hasPassword = await _userManager.HasPasswordAsync(user);
             if (!hasPassword)
@@ -102,11 +106,12 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            await SetUserAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+            ViewData["User"] = user.UserName;
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
             if (!changePasswordResult.Succeeded)
@@ -123,6 +128,36 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
             StatusMessage = "Your password has been changed.";
 
             return RedirectToPage();
+        }
+        public List<IdentityRole> Roles { get; set; }
+        public bool IsAdmin { get; set; } = false;
+        public string UserName { get; set; }
+        public BookShopWebUser user { get; set; }
+        async Task SetUserAsync()
+        {
+            if (RouteData.Values["userName"] is null)
+                UserName = User.Identity.Name;
+            else UserName = RouteData.Values["userName"].ToString();
+            Roles = _roleManager.Roles.ToList();
+            var currentlyLogedUser = await _userManager.GetUserAsync(User);
+            IsAdmin = (await _userManager.GetRolesAsync(currentlyLogedUser)).Contains("Admin");
+            if (UserName == User.Identity.Name)
+                user = currentlyLogedUser;
+            else if (IsAdmin)
+            {
+                if ((await _userManager.GetUsersInRoleAsync("Admin")).Select(a => a.UserName).Contains(UserName))
+                {
+                    user = currentlyLogedUser;
+                }
+                else
+                {
+                    user = _userManager.Users.FirstOrDefault(a => a.UserName == UserName);
+                }
+            }
+            else
+            {
+                user = currentlyLogedUser;
+            }
         }
     }
 }

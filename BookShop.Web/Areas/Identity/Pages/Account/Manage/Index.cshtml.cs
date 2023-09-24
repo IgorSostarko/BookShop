@@ -84,6 +84,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
 
             Username = userName;
 
+
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
@@ -101,12 +102,12 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
         {
             await  SetUserAsync();
-                
+            
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
+            ViewData["User"] = user.UserName;
             await LoadAsync(user);
             return Page();
         }
@@ -119,7 +120,7 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
+            ViewData["User"] = user.UserName;
             if (!ModelState.IsValid)
             {
                 await LoadAsync(user);

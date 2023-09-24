@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -21,15 +22,18 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<BookShopWebUser> _userManager;
         private readonly SignInManager<BookShopWebUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public EmailModel(
             UserManager<BookShopWebUser> userManager,
             SignInManager<BookShopWebUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -89,24 +93,25 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            await SetUserAsync();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
+            ViewData["User"] = user.UserName;
             await LoadAsync(user);
             return Page();
         }
 
         public async Task<IActionResult> OnPostChangeEmailAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            await SetUserAsync();
+            
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
+            ViewData["User"] = user.UserName;
             if (!ModelState.IsValid)
             {
                 await LoadAsync(user);
@@ -139,12 +144,13 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostSendVerificationEmailAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            await SetUserAsync();
+            
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
+            ViewData["User"] = user.UserName;
             if (!ModelState.IsValid)
             {
                 await LoadAsync(user);
@@ -167,6 +173,36 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();
+        }
+        public List<IdentityRole> Roles { get; set; }
+        public bool IsAdmin { get; set; } = false;
+        public string UserName { get; set; }
+        public BookShopWebUser user { get; set; }
+        async Task SetUserAsync()
+        {
+            if (RouteData.Values["userName"] is null)
+                UserName = User.Identity.Name;
+            else UserName = RouteData.Values["userName"].ToString();
+            Roles = _roleManager.Roles.ToList();
+            var currentlyLogedUser = await _userManager.GetUserAsync(User);
+            IsAdmin = (await _userManager.GetRolesAsync(currentlyLogedUser)).Contains("Admin");
+            if (UserName == User.Identity.Name)
+                user = currentlyLogedUser;
+            else if (IsAdmin)
+            {
+                if ((await _userManager.GetUsersInRoleAsync("Admin")).Select(a => a.UserName).Contains(UserName))
+                {
+                    user = currentlyLogedUser;
+                }
+                else
+                {
+                    user = _userManager.Users.FirstOrDefault(a => a.UserName == UserName);
+                }
+            }
+            else
+            {
+                user = currentlyLogedUser;
+            }
         }
     }
 }
