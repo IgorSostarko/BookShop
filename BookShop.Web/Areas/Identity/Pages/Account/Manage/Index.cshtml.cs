@@ -1,6 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
+//#nullable disable
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -73,14 +73,14 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
             public string Address { get; set; }
             [Required]
             public string City { get; set; }
-            [Required]
-            public string Role { get; set; }
+            public string? Role { get; set; }
         }
 
         private async Task LoadAsync(BookShopWebUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
 
             Username = userName;
 
@@ -91,37 +91,16 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
                 City = user.City,
                 Name = user.Name,
                 LastName = user.LastName,
-                Role = (await _userManager.GetRolesAsync(user)).ToList()[0]
+                Role = roles[0]
             };
         }
         public List<IdentityRole> Roles { get; set; }
         public bool IsAdmin { get; set; } = false;
-        public string? UserName { get; set; }
+        public string UserName { get; set; }
+        public BookShopWebUser user { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-            if (RouteData.Values["userName"] is null)
-                UserName = User.Identity.Name;
-            else UserName = RouteData.Values["userName"].ToString();
-            Roles = _roleManager.Roles.ToList();
-            BookShopWebUser user=null;
-            var currentlyLogedUser = await _userManager.GetUserAsync(User);
-            IsAdmin = (await _userManager.GetRolesAsync(currentlyLogedUser)).Contains("Admin");
-            if (UserName==User.Identity.Name)
-                user = currentlyLogedUser;
-            else if (IsAdmin){
-                if ((await _userManager.GetUsersInRoleAsync("Admin")).Select(a=>a.UserName).Contains(UserName))
-                {
-                    user = currentlyLogedUser;
-                }
-                else
-                {
-                    user=_userManager.Users.FirstOrDefault(a=>a.UserName==UserName);
-                }
-            }
-            else
-            {
-                user = currentlyLogedUser;
-            }
+            await  SetUserAsync();
                 
             if (user == null)
             {
@@ -134,7 +113,8 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            await SetUserAsync();
+            //var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -156,14 +136,45 @@ namespace BookShop.Web.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+            if (Input.Role is not null)
+                await _userManager.RemoveFromRoleAsync(user, (await _userManager.GetRolesAsync(user))[0]);
             user.Address = Input.Address;
             user.City = Input.City;
             user.Name = Input.Name;
             user.LastName = Input.LastName;
+            if (Input.Role is not null)
+                await _userManager.AddToRoleAsync(user, Input.Role);
             await _userManager.UpdateAsync(user);
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            if (UserName == User.Identity.Name)
+                await _signInManager.RefreshSignInAsync(user);
+            StatusMessage = "Profile has been updated";
             return RedirectToPage();
+        }
+        async Task SetUserAsync()
+        {
+            if (RouteData.Values["userName"] is null)
+                UserName = User.Identity.Name;
+            else UserName = RouteData.Values["userName"].ToString();
+            Roles = _roleManager.Roles.ToList();
+            var currentlyLogedUser = await _userManager.GetUserAsync(User);
+            IsAdmin = (await _userManager.GetRolesAsync(currentlyLogedUser)).Contains("Admin");
+            if (UserName == User.Identity.Name)
+                user = currentlyLogedUser;
+            else if (IsAdmin)
+            {
+                if ((await _userManager.GetUsersInRoleAsync("Admin")).Select(a => a.UserName).Contains(UserName))
+                {
+                    user = currentlyLogedUser;
+                }
+                else
+                {
+                    user = _userManager.Users.FirstOrDefault(a => a.UserName == UserName);
+                }
+            }
+            else
+            {
+                user = currentlyLogedUser;
+            }
         }
     }
 }
