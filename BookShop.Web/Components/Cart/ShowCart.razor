@@ -92,6 +92,8 @@
 }
 
 @code {
+    [Inject]
+    public IJSRuntime JsRuntime { get; set; }
     public List<CartProductConnection>? cartProducts = null;
     public AuthenticationState? state;
     [Parameter]
@@ -117,7 +119,10 @@
         if (quantity > 0)
         {
             var added = await CartService.AddToCart(new CartProductConnection() { Price = connection.Price, CartId = name, ProductId = connection.ProductId, Quantity = quantity - connection.Quantity });
+            if (quantity < connection.Quantity) await JsRuntime.InvokeVoidAsync("decreaseCartNumber");
+            else if (quantity > connection.Quantity) await JsRuntime.InvokeVoidAsync("increaseCartNumber");
             connection.Quantity = quantity;
+
         }
         else if (quantity==0)
         {

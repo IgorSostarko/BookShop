@@ -12,6 +12,7 @@
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject ICartService CartService
 @inject ICategoryService CategoryService
+@inject IJSRuntime JsRuntime
 
 <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
     <div class="container">
@@ -133,7 +134,9 @@ else
         Products = new List<Product>(products);
         Categories = await CategoryService.GetCategories();
         Filter = new FilterItem();
+
     }
+
     public void GetDetails(int id)
     {
         NavigationManager.NavigateTo($"/product/{id}");
@@ -154,9 +157,11 @@ else
             var added = await CartService.AddToCart(new CartProductConnection() { Price = price, CartId = user.User.Identity.Name, ProductId = id, Quantity = quantity });
             if (added)
             {
+                await JsRuntime.InvokeVoidAsync("increaseCartNumber");
                 NotificationService.Notify(NotificationSeverity.Success, "Success", "Succesfuly added to cart!");
             }
         }
+
 
     }
     public async void Submit()

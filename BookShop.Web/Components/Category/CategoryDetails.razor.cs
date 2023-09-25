@@ -3,6 +3,7 @@ using BookShop.Web.Interfaces;
 using BookShop.Web.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 using Radzen;
 using System.Globalization;
 
@@ -24,6 +25,8 @@ public partial class CategoryDetails:ComponentBase
     public AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
     [Inject]
     public ICartService CartService { get; set; }
+    [Inject]
+    public IJSRuntime JsRuntime { get; set; }
     public AuthenticationState? user;
     [Parameter]
     public int id { get; set; }
@@ -58,6 +61,7 @@ public partial class CategoryDetails:ComponentBase
             var added = await CartService.AddToCart(new CartProductConnection() { Price=price, CartId=user.User.Identity.Name, ProductId=id, Quantity=quantity});
             if (added)
             {
+                await JsRuntime.InvokeVoidAsync("increaseCartNumber");
                 NotificationService.Notify(NotificationSeverity.Success, "Success", "Succesfuly added to cart!");
             }
         }

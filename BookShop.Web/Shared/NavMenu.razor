@@ -1,6 +1,8 @@
-﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+﻿@using Web.Interfaces
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
-
+@inject IJSRuntime JsRuntime
+@inject ICartService CartService
 
 <div class="ps-3 navbar navbar-expand-sm navbar-light bg-secondary bg-opacity-10">
     <div class="container-fluid">
@@ -33,6 +35,8 @@
                     <a class="nav-item nav-link" style="white-space:nowrap;" href="/account">Welcome <b>@LogedIn.User.Identity.Name</b>!</a>
                 </div>
                 <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="GoToCart" Icon="shopping_cart"></RadzenButton>
+                <div id="cartNumber" style="position:relative; font-size:inherit.5rem; left:-0.5rem; top:1rem;"></div>
+                
             }
             else
             {
@@ -67,5 +71,14 @@
     private void GoToCart()
     {
         NavigationManager.NavigateTo("/cart", true);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            if (LogedIn.User.Identity.IsAuthenticated)
+            await JsRuntime.InvokeVoidAsync("setCartNumber", await CartService.GetNumberOfItemsOfUser(LogedIn.User.Identity.Name));
+        }
     }
 }

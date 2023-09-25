@@ -33,5 +33,11 @@ namespace BookShop.Web.Services
             var items=check.Content.ReadFromJsonAsync<List<CartProductConnection>>();
             return items.Result;
         }
+
+        public async Task<int> GetNumberOfItemsOfUser(string username)
+        {
+            var number = await _httpClient.GetFromJsonAsync<int>($"api/carts/number/{username}");
+            return number;
+        }
     }
 }

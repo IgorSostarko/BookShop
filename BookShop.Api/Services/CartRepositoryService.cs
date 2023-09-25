@@ -59,5 +59,11 @@ namespace BookShop.Api.Services
             var items= _appDbContext.CartProducts.Where(a=>a.CartId==user).Include(a=>a.Product).ThenInclude(a=>a.Category).ToList();
             return Task.FromResult(items);
         }
+
+        public Task<int> GetNumOfItemsInCart(string username)
+        {
+            var number = _appDbContext.CartProducts.Where(a => a.CartId == username).Select(a => a.Quantity).Sum();
+            return Task.FromResult(number);
+        }
     }
 }

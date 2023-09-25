@@ -7,5 +7,6 @@ namespace BookShop.Api.Interfaces
         Task<bool> CartExists(string id);
         public Task<CartProductConnection> AddToCart(CartProductConnection connection);
         public Task<List<CartProductConnection>> GetItemsOfCart(string user);
+        public Task<int> GetNumOfItemsInCart(string username);
     }
 }

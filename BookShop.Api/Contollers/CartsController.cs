@@ -33,5 +33,11 @@ namespace BookShop.Api.Contollers
             var items = await _cartRepositoryService.GetItemsOfCart(user);
             return items;
         }
+        [HttpGet("number/{userName}")]
+        public async Task<int> GetNumberOfItemsInCart(string userName)
+        {
+            var number = await _cartRepositoryService.GetNumOfItemsInCart(userName);
+            return number;
+        }
     }
 }
