@@ -31,7 +31,7 @@
                     <div class="row m-auto justify-content-center" style="width:fit-content">
                         <div class=" col-md-12 col-3" style="width:10rem;">
                             <p class="m-0">Category:</p>
-                            <RadzenDropDown Name="CategoryId" class="m-0 w-100" @bind-Value=@Filter.CategoryId Data=@Categories TextProperty="Name" ValueProperty="Id" />
+                            <RadzenDropDown Name="CategoryId" Multiple="true" AllowClear="true" SelectAllText="Select all" class="m-0 w-100" @bind-Value=@Filter.CategoryId Data=@Categories TextProperty="Name" ValueProperty="Id" />
                         </div>
                         <div class=" col-md-12 col-2" style="width:10rem;">
                             <p class="m-0">Book title:</p>
@@ -132,7 +132,6 @@ else
         products = await ProductService.GetProducts();
         Products = new List<Product>(products);
         Categories = await CategoryService.GetCategories();
-        Categories.Insert(0,new Category() { Id = 0, Name = "All categories", DisplayOrder = 0 });
         Filter = new FilterItem();
     }
     public void GetDetails(int id)
@@ -205,9 +204,9 @@ else
         {
             products = products.Where(a => a.Price <= Filter.EndPrice).ToList();
         }
-        if (Filter.CategoryId is not null && Filter.CategoryId != 0)
+        if (Filter.CategoryId is not null && Filter.CategoryId.Count>0)
         {
-            products = products.Where(a => a.CategoryId == Filter.CategoryId).ToList();
+            products = products.Where(a => Filter.CategoryId.Contains(a.CategoryId)).ToList();
         }
 
     }
@@ -216,7 +215,8 @@ else
         Filter.StartPrice=null;
         Filter.EndPrice=null;
         Filter.Author=null;
-        Filter.CategoryId=null;
+        if (Filter.CategoryId is null) Filter.CategoryId = new();
+        Filter.CategoryId.Clear();
         Filter.Name = null;
         products = new List<Product>(Products);
     }
@@ -225,7 +225,7 @@ else
         public string? Author { get; set; }
         public decimal? StartPrice { get; set; }
         public decimal? EndPrice { get; set; }
-        public int? CategoryId { get; set; }
+        public List<int>? CategoryId { get; set; }
         public string? Name { get; set; }
     }
 }
