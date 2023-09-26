@@ -121,6 +121,7 @@
             var added = await CartService.AddToCart(new CartProductConnection() { Price = connection.Price, CartId = name, ProductId = connection.ProductId, Quantity = quantity - connection.Quantity });
             if (quantity < connection.Quantity) await JsRuntime.InvokeVoidAsync("decreaseCartNumber");
             else if (quantity > connection.Quantity) await JsRuntime.InvokeVoidAsync("increaseCartNumber");
+            StateHasChanged();
             connection.Quantity = quantity;
 
         }
@@ -128,6 +129,7 @@
         {
             var added = await CartService.AddToCart(new CartProductConnection() { Price = connection.Price, CartId = name, ProductId = connection.ProductId, Quantity = quantity - connection.Quantity });
             cartProducts.Remove(connection);
+            await JsRuntime.InvokeVoidAsync("decreaseCartNumber");
         }
     }
 }

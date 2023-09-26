@@ -42,7 +42,15 @@
         </form>
     </div>
 </div>
-
+@if (true)
+{
+    <script src="/js/sript.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            setNum();
+        };
+    </script>
+}
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

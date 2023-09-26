@@ -85,3 +85,6 @@ a, .btn-link {
     background-color: #6966db!important;
     color:white;
 }
+#cart_button_a{
+    background-color:transparent!important;
+}

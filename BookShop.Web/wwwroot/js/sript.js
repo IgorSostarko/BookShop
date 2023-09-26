@@ -23,3 +23,6 @@ function decreaseCartNumber() {
         else element.innerHTML = "";
     }
 }
+function setNum() {
+    setCartNumber(numberOfItems);
+}

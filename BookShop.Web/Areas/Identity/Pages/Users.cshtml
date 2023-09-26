@@ -2,8 +2,10 @@
 @using Microsoft.AspNetCore.Authorization;
 @using Microsoft.AspNetCore.Components;
 @using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.JSInterop;
 @attribute [Authorize(Roles = "Admin")]
 @model BookShop.Web.Areas.Identity.Pages.UsersModel
+@inject IJSRuntime JsRuntime
 
 <div class="jumbotron jumbotron-fluid bg-secondary bg-opacity-10">
     <div class="container">
@@ -17,7 +19,15 @@
     <input asp-for="@Model.Filter" class="rz-textbox"/>
     <button id="login-submit" type="submit" class="btn btn-primary" style="background-color:#6966db; height:2.5rem;">Filter</button>
 </form>
-
+@if (true)
+{
+    <script src="/js/sript.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            setNum();
+        };
+    </script>
+}
 @if (Model.Users is not null)
 {
     <div class="container-fluid p-0" style="display:flex; flex-wrap:wrap; text-align:center;">
