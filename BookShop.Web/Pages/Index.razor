@@ -31,23 +31,34 @@
                     <p class="lead w-100" style="text-align:center;">Filter products</p>
                     <div class="row m-auto justify-content-center" style="width:fit-content">
                         <div class=" col-md-12 col-3" style="width:10rem;">
-                            <p class="m-0">Category:</p>
+                            <p class="m-0">Order by:</p>
+                            <RadzenDropDown Name="OrderBy" AllowClear="true" class="m-0 w-100" @bind-Value=@Filter.OrderBy Data=@OrderType />
+                        </div>
+                        <div class="col-md-12 col-3" style="width:10rem;">
+                            <p class="m-0 mt-2">Display order:</p>
+                            <div style="width:fit-content; margin:auto;">
+                                <RadzenCheckBox @bind-Value=@Filter.Direction Name="Direction" />
+                                <RadzenLabel Text="Ascending" Component="Direction" Style="margin-left: 8px; vertical-align: middle;" />
+                            </div>
+                        </div>
+                        <div class=" col-md-12 col-3" style="width:10rem;">
+                            <p class="m-0 mt-2">Category:</p>
                             <RadzenDropDown Name="CategoryId" Multiple="true" AllowClear="true" SelectAllText="Select all" class="m-0 w-100" @bind-Value=@Filter.CategoryId Data=@Categories TextProperty="Name" ValueProperty="Id" />
                         </div>
                         <div class=" col-md-12 col-2" style="width:10rem;">
-                            <p class="m-0">Book title:</p>
+                            <p class="m-0 mt-2">Book title:</p>
                             <RadzenTextBox style="display: block" Name="Name" @bind-Value=@Filter.Name class="m-0 w-100" />
                         </div>
                         <div class="col-md-12 col-2" style="width:10rem;">
-                            <p class="m-0">Author:</p>
+                            <p class="m-0 mt-2">Author:</p>
                             <RadzenTextBox style="display: block" Name="Author" @bind-Value=@Filter.Author class="m-0 w-100" />
                         </div>
                         <div class=" col-md-12 col-2" style="width:10rem;">
-                            <p class="m-0">Start price:</p>
+                            <p class="m-0 mt-2">Start price:</p>
                             <RadzenNumeric Culture="hr" style="display: block" Name="StartPrice" @bind-Value=@Filter.StartPrice class="m-0 w-100" Format="C0" />
                         </div>
                         <div class=" col-md-12 col-3" style="width:10rem;">
-                            <p class="m-0">End price:</p>
+                            <p class="m-0 mt-2">End price:</p>
                             <RadzenNumeric Culture="hr" style="display: block" Name="EndPrice" @bind-Value=@Filter.EndPrice class="m-0 w-100" Format="C0" />
                         </div>
                     </div>
@@ -127,6 +138,7 @@ else
     public List<Product>? Products;
     public FilterItem? Filter { get; set; }
     public List<Category>? Categories { get; set; }
+    public List<string> OrderType { get; set; } = new List<string>() { "name", "price" };
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -213,6 +225,19 @@ else
         {
             products = products.Where(a => Filter.CategoryId.Contains(a.CategoryId)).ToList();
         }
+        if (Filter.OrderBy is not null && Filter.OrderBy != "")
+        {
+            if (Filter.OrderBy == "price")
+                if (Filter.Direction.GetValueOrDefault())
+                    products = products.OrderBy(a => a.Price).ToList();
+                else
+                    products = products.OrderByDescending(a => a.Price).ToList();
+            else if (Filter.OrderBy == "name")
+                if (Filter.Direction.GetValueOrDefault())
+                    products = products.OrderBy(a => a.Name).ToList();
+                else
+                    products = products.OrderByDescending(a => a.Name).ToList();
+        }
 
     }
     public void ClearFilter()
@@ -223,6 +248,8 @@ else
         if (Filter.CategoryId is null) Filter.CategoryId = new();
         Filter.CategoryId.Clear();
         Filter.Name = null;
+        Filter.OrderBy = null;
+        Filter.Direction = false;
         products = new List<Product>(Products);
     }
     public class FilterItem
@@ -232,5 +259,7 @@ else
         public decimal? EndPrice { get; set; }
         public List<int>? CategoryId { get; set; }
         public string? Name { get; set; }
+        public string? OrderBy { get; set; }
+        public bool? Direction { get; set; }
     }
 }
