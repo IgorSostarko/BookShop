@@ -16,9 +16,9 @@ namespace BookShop.Api.Contollers
             _cartRepositoryService = cartRepositoryService;
         }
         [HttpGet("create/{id}")]
-        public async Task<ActionResult<bool>> CheckIfExistsAndCreate(string id)
+        public async Task<ActionResult<bool>> CheckIfExistsAndCreate(string id_)
         {
-            var check = await _cartRepositoryService.CartExists(id);
+            var check = await _cartRepositoryService.CartExists(id_);
             return Ok(check);
         }
         [HttpPost]
